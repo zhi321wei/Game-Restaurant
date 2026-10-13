@@ -18,9 +18,14 @@
             '<div class="sun"></div>' +
             '<div class="sea"></div>' +
           '</div>' +
+          '<div class="fx-layer"></div>' +
           '<div class="topbar">' +
             '<span class="title"></span>' +
             '<span class="progress"></span>' +
+          '</div>' +
+          '<div class="art-card art-in">' +
+            '<img class="art-img" alt=""/>' +
+            '<div class="art-caption"></div>' +
           '</div>' +
           '<div class="stage">' +
             '<div class="actor hide">' +
@@ -45,6 +50,10 @@
       this.$root = el.querySelector('.story');
       this.$title = el.querySelector('.title');
       this.$progress = el.querySelector('.progress');
+      this.$artCard = el.querySelector('.art-card');
+      this.$artImg = el.querySelector('.art-img');
+      this.$caption = el.querySelector('.art-caption');
+      this.$fxLayer = el.querySelector('.fx-layer');
       this.$actor = el.querySelector('.actor');
       this.$avatar = el.querySelector('.avatar');
       this.$who = el.querySelector('.who');
@@ -81,8 +90,44 @@
       this.d.done = false;
       this.$title.textContent = chapter.title;
       this.d.total = chapter.lines.length;
+      this._renderChapterArt(chapter);
       this._renderFoot();
       this.showLine(0);
+    },
+
+    /* 渲染章节插图 + 文案 + 氛围粒子；切章时重放入场动画 */
+    _renderChapterArt: function (chapter) {
+      this.$artImg.src = 'assets/story/' + chapter.art;
+      this.$caption.textContent = chapter.caption || '';
+      this.$artCard.classList.remove('art-in');
+      void this.$artCard.offsetWidth; // 强制 reflow，重放动画
+      this.$artCard.classList.add('art-in');
+      this._spawnFx(chapter.fx);
+    },
+
+    /* 氛围粒子：按章节 fx 类型漂浮不同 emoji */
+    _spawnFx: function (fx) {
+      var sets = {
+        sunset: ['🧡', '✨', '💛'],
+        day: ['✨', '💛', '🌼'],
+        mystery: ['🍂', '✨', '🕯'],
+        dusk: ['⭐', '✨', '🌆'],
+        night: ['⭐', '🌙', '✨'],
+        warm: ['💗', '🤍', '💛'],
+        party: ['🎉', '✨', '⭐', '🎊']
+      };
+      var set = sets[fx] || sets.warm;
+      var html = '';
+      for (var i = 0; i < 10; i++) {
+        var left = (4 + Math.random() * 88).toFixed(1);
+        var delay = (Math.random() * 6).toFixed(1);
+        var dur = (5 + Math.random() * 4).toFixed(1);
+        var size = Math.round(20 + Math.random() * 14);
+        html += '<span class="fx-p" style="left:' + left + '%;animation-delay:' + delay +
+          's;animation-duration:' + dur + 's;font-size:' + size + 'px">' +
+          set[i % set.length] + '</span>';
+      }
+      this.$fxLayer.innerHTML = html;
     },
 
     onHide: function () {
@@ -97,7 +142,10 @@
       var d = this.d;
       this.$progress.textContent = (d.idx + 1) + '/' + d.total;
       var role = d.role;
+      this.$actor.classList.remove('pop');
+      void this.$actor.offsetWidth; // 重放说话人弹跳动画
       this.$actor.classList.toggle('hide', !(role && role.avatar));
+      if (role && role.avatar) this.$actor.classList.add('pop');
       this.$avatar.textContent = (role && role.avatar) || '';
       this.$who.style.display = (role && role.name) ? '' : 'none';
       this.$who.textContent = (role && role.name) || '';
@@ -174,6 +222,7 @@
         this.d.done = false;
         this.$title.textContent = c.title;
         this.d.total = c.lines.length;
+        this._renderChapterArt(c);
         this._renderFoot();
         this.showLine(0);
       } else {

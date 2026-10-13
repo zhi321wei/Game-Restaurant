@@ -17,6 +17,9 @@ const ROLES = {
 const CHAPTERS = [
   {
     id: 'ch1',
+    art: 'ch1.jpg',
+    fx: 'sunset',
+    caption: '末班船靠岸时，晚霞正落在妈妈的老房子上。',
     title: '第一章 · 回到浪尾岛',
     trigger: { type: 'start' },
     lines: [
@@ -31,6 +34,9 @@ const CHAPTERS = [
   },
   {
     id: 'ch2',
+    art: 'ch2.jpg',
+    fx: 'day',
+    caption: '岛上的人认的是手艺，不是闲话。',
     title: '第二章 · 第一位客人',
     trigger: { type: 'level', value: 3 },
     lines: [
@@ -43,6 +49,9 @@ const CHAPTERS = [
   },
   {
     id: 'ch3',
+    art: 'ch3.jpg',
+    fx: 'mystery',
+    caption: '一双绿色的眼睛，在暗处看了她们很久。',
     title: '第三章 · 地板下的声音',
     trigger: { type: 'decor', value: 'floor' },
     lines: [
@@ -55,6 +64,9 @@ const CHAPTERS = [
   },
   {
     id: 'ch4',
+    art: 'ch4.jpg',
+    fx: 'dusk',
+    caption: '有些债，总要有人来还。',
     title: '第四章 · 卡特家族',
     trigger: { type: 'level', value: 5 },
     lines: [
@@ -67,6 +79,9 @@ const CHAPTERS = [
   },
   {
     id: 'ch5',
+    art: 'ch5.jpg',
+    fx: 'night',
+    caption: '窗台上的湿爪印，把过去一路叼回了现在。',
     title: '第五章 · 窗台上的爪印',
     trigger: { type: 'decor', value: 'window' },
     lines: [
@@ -78,6 +93,9 @@ const CHAPTERS = [
   },
   {
     id: 'ch6',
+    art: 'ch6.jpg',
+    fx: 'mystery',
+    caption: '半张撕掉的单据，藏着半句没说出口的话。',
     title: '第六章 · 进货单',
     trigger: { type: 'decor', value: 'piano' },
     lines: [
@@ -89,6 +107,9 @@ const CHAPTERS = [
   },
   {
     id: 'ch7',
+    art: 'ch7.jpg',
+    fx: 'day',
+    caption: '一枚袖扣，把那一夜的秘密留在了木缝里。',
     title: '第七章 · 露台上的袖扣',
     trigger: { type: 'decor', value: 'terrace' },
     lines: [
@@ -100,6 +121,9 @@ const CHAPTERS = [
   },
   {
     id: 'ch8',
+    art: 'ch8.jpg',
+    fx: 'warm',
+    caption: '这一次，她是为自己干的活。',
     title: '第八章 · 老板娘',
     trigger: { type: 'level', value: 12 },
     lines: [
@@ -111,6 +135,9 @@ const CHAPTERS = [
   },
   {
     id: 'ch9',
+    art: 'ch9.jpg',
+    fx: 'mystery',
+    caption: '别喝那批牛奶。——妈妈留下的最后一句话。',
     title: '第九章 · 纸条',
     trigger: { type: 'decor', value: 'blackcat' },
     lines: [
@@ -123,6 +150,9 @@ const CHAPTERS = [
   },
   {
     id: 'ch10',
+    art: 'ch10.jpg',
+    fx: 'dusk',
+    caption: '沉默也是一种罪，而道歉需要时间。',
     title: '第十章 · 真相',
     trigger: { type: 'level', value: 16 },
     lines: [
@@ -135,6 +165,9 @@ const CHAPTERS = [
   },
   {
     id: 'ch11',
+    art: 'ch11.jpg',
+    fx: 'party',
+    caption: '浪漫，是把碎掉的东西一块一块拼回去。',
     title: '第十一章 · 重新亮起来',
     trigger: { type: 'decor', value: 'stage' },
     lines: [
@@ -147,6 +180,9 @@ const CHAPTERS = [
   },
   {
     id: 'ch12',
+    art: 'ch12.jpg',
+    fx: 'warm',
+    caption: '一百位客人，一百个笑着离开的理由。',
     title: '第十二章 · 一百个订单',
     trigger: { type: 'orders', value: 100 },
     lines: [

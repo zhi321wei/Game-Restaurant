@@ -34,6 +34,80 @@
   opacity: 0.85;
 }
 
+/* 氛围粒子层：漂浮的 emoji 粒子，类型由章节 fx 决定 */
+#screen-story .fx-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+#screen-story .fx-p {
+  position: absolute;
+  bottom: -40px;
+  opacity: 0;
+  animation: fx-float linear infinite;
+  filter: drop-shadow(0 2px 4px rgba(122, 85, 64, 0.25));
+}
+@keyframes fx-float {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  12% { opacity: 0.9; }
+  85% { opacity: 0.5; }
+  100% { transform: translateY(-620px) rotate(24deg); opacity: 0; }
+}
+
+/* 章节插图卡片：入场弹入 + 缓慢 Ken Burns 推移 */
+#screen-story .art-card {
+  position: relative;
+  margin: 4px 32px 0;
+  height: 330px;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(122, 85, 64, 0.22);
+  z-index: 1;
+}
+#screen-story .art-card.art-in {
+  animation: art-in 0.65s cubic-bezier(0.2, 0.9, 0.3, 1.15) both;
+}
+@keyframes art-in {
+  from { opacity: 0; transform: scale(0.86) translateY(24px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+#screen-story .art-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  animation: kenburns 14s ease-in-out infinite alternate;
+}
+@keyframes kenburns {
+  from { transform: scale(1) translate(0, 0); }
+  to { transform: scale(1.09) translate(-8px, -10px); }
+}
+#screen-story .art-card.art-in .art-caption {
+  animation: cap-fade 0.9s 0.35s both;
+}
+#screen-story .art-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 44px 24px 16px;
+  font-size: 22px;
+  line-height: 32px;
+  color: #fff;
+  letter-spacing: 1px;
+  background: linear-gradient(180deg, transparent, rgba(60, 30, 20, 0.6));
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+@keyframes cap-fade {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 #screen-story .topbar {
   position: relative;
   display: flex;
@@ -54,7 +128,7 @@
 
 #screen-story .stage {
   position: relative;
-  height: 420px;
+  height: 240px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -67,8 +141,15 @@
 #screen-story .actor.hide {
   opacity: 0;
 }
+#screen-story .actor.pop {
+  animation: pop-in 0.35s ease-out;
+}
+@keyframes pop-in {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
 #screen-story .avatar {
-  font-size: 170px;
+  font-size: 110px;
   line-height: 1;
   filter: drop-shadow(0 8px 14px rgba(122, 85, 64, 0.28));
   animation: bob 2.6s ease-in-out infinite;
