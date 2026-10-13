@@ -1,0 +1,430 @@
+/* 餐厅装修页样式（移植自 decor.wxss，单位已转 px，选择器加 #screen-decor 前缀） */
+
+#screen-decor .page {
+  height: 100vh;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #ffe9ef 0%, #fdf1e6 30%, #f6e6d6 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#screen-decor .nav {
+  height: 72px;
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  position: relative;
+}
+#screen-decor .back {
+  width: 56px;
+  height: 56px;
+  line-height: 52px;
+  text-align: center;
+  font-size: 44px;
+  font-weight: 700;
+  color: #7a5540;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 3px 10px rgba(122, 85, 64, 0.16);
+}
+#screen-decor .nav-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 800;
+  color: #5c3d2e;
+  pointer-events: none;
+}
+#screen-decor .nav-coin {
+  margin-left: auto;
+  font-size: 26px;
+  font-weight: 800;
+  color: #d99520;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 6px 20px;
+  border-radius: 999px;
+}
+
+/* ---------------------------------------------------------------- 房间 */
+#screen-decor .room {
+  flex-shrink: 0;
+  position: relative;
+  margin: 10px 24px 0;
+  height: 480px;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #cbb9a8;
+  box-shadow: 0 10px 26px rgba(122, 85, 64, 0.22);
+}
+
+#screen-decor .wallpaper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0 24px, rgba(0, 0, 0, 0.05) 24px 48px),
+    #c3b09e;
+}
+#screen-decor .room.walled .wallpaper {
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0 26px, rgba(255, 214, 224, 0.5) 26px 52px),
+    linear-gradient(180deg, #fff4e8 0%, #ffe6ec 100%);
+}
+
+#screen-decor .floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 90px;
+  background: #9c8a7a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.4s ease;
+}
+#screen-decor .floor.done {
+  background:
+    repeating-linear-gradient(90deg, #d9a76a 0 46px, #c9965a 46px 48px),
+    linear-gradient(180deg, #e0b478, #c9965a);
+}
+#screen-decor .f-hint {
+  font-size: 18px;
+  color: #efe4d8;
+}
+
+#screen-decor .part {
+  position: absolute;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.42);
+  border: 2px dashed rgba(122, 85, 64, 0.4);
+  overflow: hidden;
+}
+#screen-decor .part .p-ico {
+  font-size: 46px;
+  opacity: 0.32;
+  filter: grayscale(1);
+  line-height: 1.1;
+}
+#screen-decor .part .p-hint {
+  font-size: 17px;
+  color: #7a6255;
+  opacity: 0.8;
+  text-align: center;
+  padding: 0 6px;
+}
+#screen-decor .part.done {
+  background: rgba(255, 255, 255, 0.92);
+  border: 3px solid rgba(232, 96, 127, 0.35);
+  box-shadow: 0 6px 14px rgba(122, 85, 64, 0.18);
+}
+#screen-decor .part.done .p-ico {
+  opacity: 1;
+  filter: none;
+  font-size: 54px;
+  filter: drop-shadow(0 3px 4px rgba(122, 85, 64, 0.25));
+}
+#screen-decor .p-label {
+  font-size: 16px;
+  font-weight: 800;
+  color: #e8607f;
+  letter-spacing: 2px;
+}
+
+/* 只改透明度：部分元素靠 transform: translateX(-50%) 居中，覆盖 transform 会跑位 */
+#screen-decor .part:active,
+#screen-decor .floor:active {
+  opacity: 0.7;
+}
+
+#screen-decor .p-sign { left: 50%; transform: translateX(-50%); top: 14px; width: 320px; height: 58px; }
+#screen-decor .p-lamp { left: 50%; transform: translateX(-50%); top: 82px; width: 90px; height: 58px; }
+#screen-decor .p-window { left: 24px; top: 110px; width: 200px; height: 150px; }
+#screen-decor .p-flowers { left: 34px; top: 268px; width: 180px; height: 52px; }
+#screen-decor .p-piano { left: 24px; bottom: 110px; width: 140px; height: 72px; }
+#screen-decor .p-terrace { right: 24px; top: 100px; width: 180px; height: 200px; }
+#screen-decor .p-kitchen { right: 215px; top: 118px; width: 130px; height: 104px; }
+#screen-decor .p-garden { right: 215px; top: 228px; width: 130px; height: 74px; }
+#screen-decor .p-counter { left: 50%; transform: translateX(-50%); bottom: 100px; width: 240px; height: 82px; }
+#screen-decor .p-seats { left: 172px; bottom: 110px; width: 70px; height: 72px; }
+#screen-decor .p-stage { right: 24px; bottom: 100px; width: 130px; height: 82px; }
+
+#screen-decor .p-window.done {
+  background: linear-gradient(180deg, #bfe6f5 0%, #ffe9c9 100%);
+}
+#screen-decor .p-terrace.done {
+  background: linear-gradient(180deg, #ffe1c2 0%, #bfe6f5 100%);
+}
+
+#screen-decor .cat, #screen-decor .host {
+  position: absolute;
+  bottom: 16px;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.2));
+}
+#screen-decor .cat { right: 30px; }
+#screen-decor .host { left: 36px; }
+#screen-decor .cat .p-ico, #screen-decor .host .p-ico, #screen-decor .host-ico {
+  font-size: 46px;
+}
+
+/* ---------------------------------------------------------------- 线索条 */
+#screen-decor .clue-bar {
+  margin: 16px 24px 0;
+  padding: 16px 24px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #4a3a52, #2f2a3a);
+  display: flex;
+  align-items: center;
+  box-shadow: 0 6px 16px rgba(47, 42, 58, 0.3);
+}
+#screen-decor .cb-ico { font-size: 30px; }
+#screen-decor .cb-txt {
+  font-size: 24px;
+  color: #f3e9dd;
+  margin-left: 12px;
+  font-weight: 600;
+}
+#screen-decor .cb-more {
+  margin-left: auto;
+  font-size: 22px;
+  color: #ffb3c7;
+}
+
+/* ---------------------------------------------------------------- 清单 */
+/* scroll-view -> 普通 div + overflow-y:auto */
+#screen-decor .list {
+  flex: 1;
+  min-height: 0;    /* 关键：不设这条列表会被内容撑开，内部滚动失效 */
+  margin-top: 14px;
+  padding: 0 24px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#screen-decor .dcard {
+  background: #fff;
+  border-radius: 24px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 16px rgba(122, 85, 64, 0.12);
+  border: 3px solid transparent;
+}
+#screen-decor .dcard.ready {
+  border-color: #ffb3c7;
+  box-shadow: 0 6px 18px rgba(232, 96, 127, 0.22);
+}
+#screen-decor .dcard.done {
+  opacity: 0.72;
+}
+#screen-decor .dcard.hl {
+  border-color: #ffb3c7;
+  box-shadow: 0 0 0 6px rgba(232, 96, 127, 0.18), 0 8px 20px rgba(232, 96, 127, 0.22);
+  animation: hlPulse 0.8s ease-out;
+}
+@keyframes hlPulse {
+  0% { transform: scale(0.98); }
+  60% { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+
+#screen-decor .d-head {
+  display: flex;
+  align-items: center;
+}
+#screen-decor .d-name {
+  font-size: 28px;
+  font-weight: 800;
+  color: #5c3d2e;
+}
+#screen-decor .d-tag {
+  margin-left: auto;
+  font-size: 20px;
+  padding: 4px 16px;
+  border-radius: 999px;
+  background: #f2ece6;
+  color: #a08a7c;
+}
+#screen-decor .d-tag.ready { background: #ffe0e7; color: #e8607f; }
+#screen-decor .d-tag.lack { background: #fff2d9; color: #d99520; }
+#screen-decor .d-tag.coin { background: #ffe9e9; color: #d9534f; }
+#screen-decor .d-tag.lock { background: #eceff3; color: #8b98a8; }
+
+#screen-decor .d-desc {
+  font-size: 22px;
+  color: #9a8073;
+  margin: 8px 0 12px;
+  line-height: 34px;
+}
+
+#screen-decor .d-req {
+  display: flex;
+  flex-wrap: wrap;
+}
+#screen-decor .req {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px;
+  margin: 0 10px 8px 0;
+  border-radius: 14px;
+  background: #f7f1ea;
+  border: 2px solid #ece2d8;
+}
+#screen-decor .req.ok {
+  background: #eafaf3;
+  border-color: #a9e2c9;
+}
+#screen-decor .r-ico { font-size: 28px; }
+#screen-decor .r-n { font-size: 20px; color: #a08a7c; margin-left: 6px; }
+#screen-decor .req.ok .r-n { color: #4aa383; }
+
+#screen-decor .d-foot {
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+}
+#screen-decor .d-cost {
+  font-size: 26px;
+  font-weight: 800;
+  color: #d99520;
+}
+#screen-decor .d-btn {
+  margin-left: auto;
+  height: 60px;
+  line-height: 56px;
+  padding: 0 30px;
+  border-radius: 999px;
+  background: #f2ece6;
+  color: #b8a599;
+  font-size: 24px;
+  font-weight: 700;
+  border: 2px solid #e6dbd0;
+}
+#screen-decor .d-btn.on {
+  color: #fff;
+  background: linear-gradient(135deg, #ff9db4, #e8607f);
+  border-color: transparent;
+  box-shadow: 0 5px 12px rgba(232, 96, 127, 0.35);
+}
+
+#screen-decor .pad { height: 40px; }
+
+/* ---------------------------------------------------------------- 弹窗 */
+/* 遮罩与居中弹窗（对应 app.wxss 的 .mask / .modal，本页自带作用域版本） */
+#screen-decor .mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(60, 38, 28, 0.55);
+  z-index: 900;
+}
+#screen-decor .modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background: #fff;
+  border-radius: 32px;
+  box-shadow: 0 12px 36px rgba(122, 85, 64, 0.22);
+  overflow: hidden;
+}
+
+/* 按钮在弹窗内的尺寸对齐 app.wxss（common.css 的全局按钮尺寸不同） */
+#screen-decor .btn-romantic {
+  height: 76px;
+  padding: 0 32px;
+  font-size: 30px;
+  font-weight: 600;
+  box-sizing: border-box;
+}
+#screen-decor .btn-romantic.ghost {
+  background: rgba(255, 255, 255, 0.86);
+  color: #e8607f;
+  box-shadow: 0 2px 8px rgba(122, 85, 64, 0.12);
+  border: 2px solid rgba(232, 96, 127, 0.28);
+}
+
+#screen-decor .cf {
+  width: 560px;
+  padding: 34px 32px 30px;
+  text-align: center;
+}
+#screen-decor .cf-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #5c3d2e;
+}
+#screen-decor .cf-desc {
+  font-size: 24px;
+  color: #9a8073;
+  margin: 10px 0 20px;
+  line-height: 36px;
+}
+#screen-decor .cf-req {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: #fdf6ee;
+  border-radius: 18px;
+  padding: 16px 20px;
+}
+#screen-decor .cf-req-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+}
+#screen-decor .cf-n {
+  font-size: 24px;
+  color: #7a5540;
+  margin-left: 10px;
+}
+#screen-decor .cf-btns {
+  display: flex;
+  margin-top: 26px;
+}
+#screen-decor .cf-btns .btn-romantic {
+  flex: 1;
+  margin: 0 10px;
+}
+
+#screen-decor .clue-modal {
+  width: 560px;
+  padding: 34px 32px 30px;
+}
+#screen-decor .clue-title {
+  font-size: 30px;
+  font-weight: 800;
+  color: #4a3a52;
+  margin-bottom: 16px;
+}
+#screen-decor .clue-item {
+  font-size: 24px;
+  color: #6c5f52;
+  line-height: 42px;
+}
+
+#screen-decor .toast {
+  position: fixed;
+  left: 50%;
+  bottom: 160px;
+  transform: translateX(-50%);
+  padding: 16px 28px;
+  border-radius: 999px;
+  background: rgba(74, 52, 40, 0.9);
+  color: #fff8f0;
+  font-size: 24px;
+  z-index: 1200;
+  max-width: 76%;
+  text-align: center;
+}

@@ -1,0 +1,149 @@
+/* 剧情页样式：移植自 pages/story/story.wxss（rpx→px，选择器加 #screen-story 前缀） */
+#screen-story .story {
+  min-height: 100vh;
+  position: relative;
+  background: linear-gradient(180deg, #ffd9e4 0%, #ffe9d6 40%, #cfe9f2 100%);
+  overflow: hidden;
+}
+
+#screen-story .sky {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 46%;
+}
+#screen-story .sun {
+  position: absolute;
+  right: 70px;
+  top: 90px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #fff2b8, #ffb36b);
+  box-shadow: 0 0 60px rgba(255, 179, 107, 0.7);
+}
+#screen-story .sea {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -60px;
+  height: 160px;
+  border-radius: 50% 50% 0 0;
+  background: linear-gradient(180deg, #7fc9de, #59b7d6);
+  opacity: 0.85;
+}
+
+#screen-story .topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+}
+#screen-story .title {
+  font-size: 30px;
+  font-weight: 800;
+  color: #6b4634;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+#screen-story .progress {
+  font-size: 22px;
+  color: #9a8073;
+}
+
+#screen-story .stage {
+  position: relative;
+  height: 420px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+#screen-story .actor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#screen-story .actor.hide {
+  opacity: 0;
+}
+#screen-story .avatar {
+  font-size: 170px;
+  line-height: 1;
+  filter: drop-shadow(0 8px 14px rgba(122, 85, 64, 0.28));
+  animation: bob 2.6s ease-in-out infinite;
+}
+#screen-story .who {
+  margin-top: 8px;
+  padding: 4px 22px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 24px;
+  font-weight: 700;
+  color: #7a5540;
+  box-shadow: 0 3px 10px rgba(122, 85, 64, 0.16);
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+#screen-story .dialog {
+  position: relative;
+  margin: 0 32px;
+  min-height: 220px;
+  padding: 32px 32px 36px;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 30px rgba(122, 85, 64, 0.18);
+}
+#screen-story .dialog .text {
+  font-size: 30px;
+  line-height: 52px;
+  color: #5c3d2e;
+  letter-spacing: 1px;
+}
+#screen-story .caret {
+  position: absolute;
+  right: 34px;
+  bottom: 26px;
+  width: 12px;
+  height: 30px;
+  background: #e8607f;
+  animation: blink 0.7s steps(1) infinite;
+}
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+#screen-story .foot {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#screen-story .tip {
+  font-size: 24px;
+  color: #9a8073;
+  animation: story-breathe 1.6s ease-in-out infinite;
+}
+/* 原版 breathe 定义在 game.wxss（小程序 wxss 全局生效）；这里就近复制并改名，避免与 game.css 冲突 */
+@keyframes story-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+#screen-story .done-foot {
+  flex-direction: row;
+  justify-content: center;
+}
+#screen-story .done-foot .btn-romantic {
+  margin: 0 16px;
+  min-width: 240px;
+}
+/* app.wxss 的 .btn-romantic.ghost（common.css 不含此变体，就近补齐） */
+#screen-story .btn-romantic.ghost {
+  background: rgba(255, 255, 255, 0.86);
+  color: #e8607f;
+  box-shadow: 0 4px 12px rgba(122, 85, 64, 0.14);
+}

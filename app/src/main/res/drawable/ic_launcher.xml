@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 启动图标：奶油底 + 粉红爱心（矢量，免 PNG） -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FBE8D8"
+        android:pathData="M0,0h108v108h-108z" />
+    <path
+        android:fillColor="#E8607F"
+        android:pathData="M54,84 C30,66 22,52 22,41 C22,30 30,24 39,24 C46,24 51,28 54,34 C57,28 62,24 69,24 C78,24 86,30 86,41 C86,52 78,66 54,84 Z" />
+    <path
+        android:fillColor="#FFF6EC"
+        android:pathData="M40,38 m-5,0 a5,5 0 1,1 10,0 a5,5 0 1,1 -10,0" />
+</vector>

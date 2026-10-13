@@ -1,0 +1,756 @@
+/* 浪漫餐厅 · 经营主页样式
+ * 移植自 miniprogram/pages/game/game.wxss：
+ *   - 所有选择器加 #screen-game 前缀作用域
+ *   - 1rpx = 1px（视口 width=750），数值不变
+ *   - 补充原 app.wxss 提供的 .mask / .modal / .btn-romantic / .safe-bottom（同样作用域化）
+ *   - 小程序 switch / slider 组件改由 checkbox / range 模拟
+ */
+
+#screen-game .page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #ffe9ef 0%, #fdf1e6 34%, #f6e6d6 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------------- HUD */
+#screen-game .hud {
+  padding: 0 20px 10px;
+}
+
+#screen-game .hud-row {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;   /* 整行左对齐：设置 / 金币 / 体力紧跟在店名后面 */
+}
+
+#screen-game .brand {
+  display: flex;
+  align-items: center;
+  min-width: 0;        /* 窄屏时让店名先被压缩，别把右边的胶囊挤出屏幕 */
+  flex-shrink: 1;
+}
+#screen-game .brand-icon {
+  font-size: 34px;
+}
+#screen-game .brand-text {
+  font-size: 32px;
+  font-weight: 800;
+  margin-left: 8px;
+  color: #5c3d2e;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 0 #fff;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#screen-game .res {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+  flex-shrink: 0;
+}
+
+#screen-game .pill {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 18px;
+  margin-left: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 3px 10px rgba(122, 85, 64, 0.16);
+  font-size: 24px;
+  color: #7a5540;
+}
+#screen-game .pill .p-ico {
+  font-size: 24px;
+  margin-right: 6px;
+}
+#screen-game .pill .p-num {
+  font-weight: 700;
+  font-size: 26px;
+}
+#screen-game .pill .p-sub {
+  margin-left: 8px;
+  font-size: 20px;
+  color: #b09a8c;
+}
+#screen-game .pill.coin .p-num {
+  color: #d99520;
+}
+#screen-game .pill.st .p-num {
+  color: #4fa3d1;
+}
+#screen-game .pill.st.low {
+  background: #ffe6e6;
+}
+#screen-game .pill.st.low .p-num {
+  color: #e8607f;
+}
+
+/* 体力胶囊后面的加号 */
+#screen-game .p-add {
+  margin-left: 10px;
+  width: 34px;
+  height: 34px;
+  line-height: 32px;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, #ff9db4, #e8607f);
+  box-shadow: 0 2px 6px rgba(232, 96, 127, 0.4);
+}
+#screen-game .p-add:active {
+  transform: scale(0.88);
+}
+
+/* 等级 + 体力 同一排 */
+#screen-game .lv-row {
+  margin-top: 8px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+}
+#screen-game .lv-badge {
+  flex-shrink: 0;
+  width: 78px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffb36b, #ef7f57);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 800;
+  box-shadow: 0 3px 8px rgba(239, 127, 87, 0.4);
+}
+#screen-game .exp-bar {
+  flex: 1;
+  height: 16px;
+  margin: 0 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(122, 85, 64, 0.18);
+}
+#screen-game .exp-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffd36b, #ff9a6b);
+  transition: width 0.35s ease;
+}
+#screen-game .exp-text {
+  flex-shrink: 0;
+  font-size: 20px;
+  color: #a08a7c;
+  min-width: 110px;
+  text-align: right;
+}
+
+/* ---------------------------------------------------------------- 订单 */
+#screen-game .orders {
+  display: flex;
+  padding: 8px 16px 12px;
+}
+
+#screen-game .ocard {
+  flex: 1;
+  margin: 0 6px;
+  background: linear-gradient(180deg, #fffdfa 0%, #fff4ea 100%);
+  border-radius: 22px;
+  padding: 10px 10px 12px;
+  box-shadow: 0 6px 16px rgba(122, 85, 64, 0.14);
+  position: relative;
+  border: 3px solid transparent;
+  overflow: hidden;
+}
+#screen-game .ocard.ready {
+  border-color: #7fd0a8;
+  box-shadow: 0 6px 18px rgba(111, 201, 176, 0.4);
+}
+
+#screen-game .o-head {
+  display: flex;
+  align-items: center;
+}
+#screen-game .o-avatar {
+  font-size: 30px;
+}
+#screen-game .o-name {
+  font-size: 22px;
+  color: #7a5540;
+  font-weight: 700;
+  margin-left: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#screen-game .o-items {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 8px 0 6px;
+  min-height: 56px;
+}
+#screen-game .o-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 52px;
+  padding: 3px 0;
+  margin: 0 4px 4px 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #f0e0d0;
+  position: relative;
+}
+#screen-game .o-item.ok {
+  border-color: #7fd0a8;
+  background: #eafaf3;
+}
+#screen-game .oi-icon {
+  font-size: 28px;
+  line-height: 32px;
+}
+#screen-game .oi-n {
+  font-size: 17px;
+  color: #a08a7c;
+  line-height: 20px;
+}
+#screen-game .o-item.ok .oi-n {
+  color: #4aa383;
+}
+
+#screen-game .o-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#screen-game .o-coin {
+  font-size: 22px;
+  font-weight: 800;
+  color: #d99520;
+}
+#screen-game .o-btn {
+  height: 44px;
+  line-height: 40px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #b8a599;
+  background: #f2ece6;
+  border: 2px solid #e6dbd0;
+}
+#screen-game .o-btn.on {
+  color: #fff;
+  background: linear-gradient(135deg, #ff9db4, #e8607f);
+  border-color: transparent;
+  box-shadow: 0 4px 10px rgba(232, 96, 127, 0.35);
+  animation: breathe 1.4s ease-in-out infinite;
+}
+
+#screen-game .o-ready-flag {
+  position: absolute;
+  right: 6px;
+  top: 4px;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  border-radius: 50%;
+  background: #6fc9b0;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+/* ---------------------------------------------------------------- 自动合成 */
+#screen-game .autobar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 2px 0 6px;
+}
+#screen-game .btn-auto {
+  display: flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 30px;
+  border-radius: 999px;
+  font-size: 25px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, #ffd48a 0%, #f2a03c 100%);
+  border: 2px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 4px 12px rgba(226, 150, 60, 0.35);
+  text-shadow: 0 1px 2px rgba(160, 100, 20, 0.25);
+}
+/* 全自动合成：玫红色，和「合一对」区分开 */
+#screen-game .btn-auto.all {
+  background: linear-gradient(135deg, #ff9fb5 0%, #e8607f 100%);
+  box-shadow: 0 4px 12px rgba(232, 96, 127, 0.38);
+  text-shadow: 0 1px 2px rgba(150, 40, 70, 0.28);
+}
+#screen-game .btn-auto:active {
+  transform: scale(0.95);
+  opacity: 0.92;
+}
+#screen-game .ba-ico {
+  font-size: 26px;
+  margin-right: 8px;
+}
+#screen-game .ba-txt {
+  letter-spacing: 2px;
+}
+
+/* ---------------------------------------------------------------- 棋盘 */
+#screen-game .board-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 0 8px;
+}
+
+#screen-game .board {
+  position: relative;
+  border-radius: 26px;
+  background: linear-gradient(180deg, #e8c9a8 0%, #dcb894 100%);
+  box-shadow: 0 10px 28px rgba(122, 85, 64, 0.28), inset 0 2px 0 rgba(255, 255, 255, 0.5);
+  padding: 0;
+  overflow: hidden;
+}
+
+/* 物品层：整体重建用，自身不接收事件，事件挂在物品元素上 */
+#screen-game .items-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+#screen-game .items-layer > * {
+  pointer-events: auto;
+}
+
+#screen-game .cell {
+  position: absolute;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.26);
+  box-shadow: inset 0 1px 2px rgba(122, 85, 64, 0.14);
+}
+#screen-game .cell.gen-cell {
+  background: rgba(120, 82, 58, 0.14);
+}
+#screen-game .cell.hint {
+  background: rgba(111, 201, 176, 0.55);
+  box-shadow: 0 0 0 3px rgba(111, 201, 176, 0.6);
+}
+
+#screen-game .item {
+  position: absolute;
+  padding: 4px;
+  transition: transform 0.12s ease;
+}
+#screen-game .item-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fffefc 0%, #fff2e4 100%);
+  box-shadow: 0 4px 10px rgba(122, 85, 64, 0.22), inset 0 -3px 0 rgba(122, 85, 64, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+#screen-game .item-icon {
+  font-size: 46px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 2px rgba(122, 85, 64, 0.2));
+}
+#screen-game .item-lv {
+  position: absolute;
+  left: 4px;
+  top: 3px;
+  min-width: 26px;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(122, 85, 64, 0.85);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  text-align: center;
+}
+#screen-game .item.maxlv .item-inner {
+  background: linear-gradient(180deg, #fff6d8 0%, #ffe6b0 100%);
+  box-shadow: 0 4px 12px rgba(213, 149, 32, 0.4), inset 0 0 0 3px #f5c85a;
+}
+#screen-game .item-star {
+  position: absolute;
+  right: 3px;
+  bottom: 2px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #d99520;
+}
+
+#screen-game .item.pop .item-inner {
+  animation: pop 0.36s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes pop {
+  0% { transform: scale(0.6); }
+  55% { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
+
+/* 生成器 */
+#screen-game .gen {
+  position: absolute;
+  padding: 3px;
+}
+#screen-game .gen-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #8a6a52 0%, #6d4f3b 100%);
+  border: 2px solid rgba(255, 216, 168, 0.55);
+  box-shadow: 0 4px 10px rgba(60, 38, 28, 0.35), inset 0 2px 0 rgba(255, 255, 255, 0.18), 0 0 0 4px rgba(255, 216, 168, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+#screen-game .gen-icon {
+  font-size: 40px;
+  line-height: 40px;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
+}
+#screen-game .gen-name {
+  font-size: 16px;
+  color: #f4e3d2;
+  line-height: 22px;
+  margin-top: 2px;
+}
+#screen-game .gen-tap {
+  position: absolute;
+  right: 4px;
+  bottom: 3px;
+  font-size: 15px;
+  color: #ffd9a8;
+  opacity: 0.85;
+}
+#screen-game .gen:not(.dragging):active .gen-inner {
+  transform: scale(0.94);
+}
+#screen-game .gen.dragging .gen-inner {
+  box-shadow: 0 12px 24px rgba(60, 38, 28, 0.45), inset 0 2px 0 rgba(255, 255, 255, 0.2), 0 0 0 5px rgba(255, 216, 168, 0.28);
+}
+
+/* ---------------------------------------------------------------- 底部栏 */
+#screen-game .tabbar {
+  display: flex;
+  padding: 10px 40px 14px;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, 0.7);
+  border-top: 2px solid rgba(255, 255, 255, 0.6);
+}
+#screen-game .tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px;
+}
+#screen-game .tab-ico {
+  font-size: 40px;
+  line-height: 44px;
+}
+#screen-game .tab-txt {
+  font-size: 20px;
+  color: #8a7264;
+  margin-top: 2px;
+}
+#screen-game .tab:active {
+  opacity: 0.6;
+}
+#screen-game .dot {
+  position: absolute;
+  right: 22px;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #e8607f;
+  box-shadow: 0 0 0 3px rgba(232, 96, 127, 0.25);
+}
+
+/* ---------------------------------------------------------------- 反馈 */
+#screen-game .floats {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 42%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  z-index: 800;
+}
+#screen-game .float {
+  font-size: 32px;
+  font-weight: 800;
+  color: #d99520;
+  text-shadow: 0 2px 6px rgba(255, 255, 255, 0.9);
+  animation: floatUp 1.2s ease-out forwards;
+  margin-bottom: 4px;
+}
+#screen-game .float.merge { color: #e8607f; }
+#screen-game .float.st { color: #4fa3d1; }
+#screen-game .float.exp { color: #6fc9b0; }
+@keyframes floatUp {
+  0% { opacity: 0; transform: translateY(10px) scale(0.8); }
+  20% { opacity: 1; transform: translateY(0) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-60px) scale(1); }
+}
+
+#screen-game .toast {
+  position: fixed;
+  left: 50%;
+  bottom: 200px;
+  transform: translateX(-50%);
+  max-width: 80%;
+  padding: 16px 28px;
+  border-radius: 999px;
+  background: rgba(74, 52, 40, 0.9);
+  color: #fff8f0;
+  font-size: 24px;
+  text-align: center;
+  z-index: 1200;
+  box-shadow: 0 6px 20px rgba(60, 38, 28, 0.3);
+}
+
+/* ---------------------------------------------------------------- 遮罩 / 弹窗（来自原 app.wxss） */
+#screen-game .mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(60, 38, 28, 0.55);
+  z-index: 900;
+}
+#screen-game .modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background: #fff;
+  border-radius: 32px;
+  box-shadow: 0 12px 36px rgba(122, 85, 64, 0.22);
+  overflow: hidden;
+}
+/* 通用按钮（按原 app.wxss 的规格覆盖 common.css 的全局版） */
+#screen-game .btn-romantic {
+  background: linear-gradient(135deg, #ff9db4 0%, #e8607f 100%);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 30px;
+  font-weight: 600;
+  box-shadow: 0 6px 16px rgba(232, 96, 127, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  height: 76px;
+  transition: transform 0.12s ease;
+}
+#screen-game .btn-romantic:active {
+  transform: scale(0.95);
+}
+/* 顶部安全区适配（来自原 app.wxss） */
+#screen-game .safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 出售弹窗 */
+#screen-game .sell-modal {
+  width: 480px;
+  padding: 40px 36px 36px;
+  text-align: center;
+}
+#screen-game .sell-title {
+  font-size: 30px;
+  font-weight: 800;
+  color: #5c3d2e;
+}
+#screen-game .sell-icon {
+  font-size: 100px;
+  margin: 16px 0 8px;
+}
+#screen-game .sell-name {
+  font-size: 26px;
+  color: #8a7264;
+}
+#screen-game .pill.gear {
+  margin-left: 0;
+  padding: 0 14px;
+  height: 52px;
+  justify-content: center;
+}
+#screen-game .pill.gear .p-ico {
+  margin-right: 0;
+  font-size: 26px;
+}
+#screen-game .pill.gear.off {
+  background: rgba(255, 255, 255, 0.6);
+}
+#screen-game .pill.gear:active {
+  transform: scale(0.92);
+}
+
+/* 设置面板 */
+#screen-game .set-modal {
+  width: 560px;
+  padding: 36px 36px 32px;
+}
+#screen-game .set-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #5c3d2e;
+  text-align: center;
+  margin-bottom: 26px;
+}
+#screen-game .set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  padding: 0 4px;
+  border-bottom: 2px solid #f5ece2;
+}
+#screen-game .set-label {
+  font-size: 27px;
+  color: #7a5540;
+  font-weight: 600;
+}
+/* 说明小字 */
+#screen-game .set-sub {
+  font-size: 19px;
+  color: #bda899;
+  padding: 6px 4px 10px;
+  margin-top: -6px;
+}
+#screen-game .set-vol {
+  padding: 18px 4px 6px;
+}
+#screen-game .set-vol-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+#screen-game .set-val {
+  font-size: 26px;
+  font-weight: 800;
+  color: #d99520;
+}
+#screen-game .set-slider {
+  width: 100%;
+  margin: 0;
+}
+#screen-game .set-vol-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 19px;
+  color: #c0aa9c;
+  margin-top: -4px;
+}
+#screen-game .set-tip {
+  font-size: 20px;
+  color: #b09a8c;
+  text-align: center;
+  margin: 18px 0 24px;
+}
+
+/* ---------------------------------------------------------------- 组件模拟 */
+/* switch（原 <switch color="#e8607f">） */
+#screen-game .switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 32px;
+  flex-shrink: 0;
+}
+#screen-game .switch input {
+  display: none;
+}
+#screen-game .switch .sw-track {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 999px;
+  background: #e9e2da;
+  transition: background 0.2s ease;
+}
+#screen-game .switch .sw-track::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+#screen-game .switch input:checked + .sw-track {
+  background: #e8607f;
+}
+#screen-game .switch input:checked + .sw-track::after {
+  transform: translateX(20px);
+}
+
+/* slider（原 <slider block-size="24" activeColor="#e8607f" backgroundColor="#efe2d6" block-color="#e8607f">） */
+#screen-game .set-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: #efe2d6;   /* JS 会按当前值改成分段渐变，模拟 activeColor */
+  outline: none;
+  margin: 12px 0 10px;
+}
+#screen-game .set-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #e8607f;
+  box-shadow: 0 2px 6px rgba(232, 96, 127, 0.4);
+}
+#screen-game .set-slider:disabled {
+  opacity: 0.5;
+}

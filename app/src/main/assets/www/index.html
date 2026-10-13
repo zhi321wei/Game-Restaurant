@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<!-- 布局视口固定 750 CSS px：小程序的 1rpx = 1px，wxss 直接 rpx→px 即可 -->
+<meta name="viewport" content="width=750, user-scalable=no">
+<title>浪漫餐厅</title>
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/game.css">
+<link rel="stylesheet" href="css/decor.css">
+<link rel="stylesheet" href="css/story.css">
+<link rel="stylesheet" href="css/album.css">
+</head>
+<body>
+<div id="app">
+  <div id="screen-game" class="screen"></div>
+  <div id="screen-decor" class="screen"></div>
+  <div id="screen-album" class="screen"></div>
+  <div id="screen-story" class="screen overlay"></div>
+</div>
+
+<script src="js/bootstrap.js"></script>
+<script src="js/wx.js"></script>
+<script src="js/config.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/decor.js"></script>
+<script src="js/story.js"></script>
+<script src="js/store.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/page-game.js"></script>
+<script src="js/page-decor.js"></script>
+<script src="js/page-album.js"></script>
+<script src="js/page-story.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
