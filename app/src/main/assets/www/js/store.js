@@ -416,7 +416,7 @@ function sell(slot) {
   const price = eng.sellPrice(s.id);
   st.slots[slot] = null;
   addCoin(price);
-  return { ok: true, price, name: meta.name, icon: meta.icon };
+  return { ok: true, price, name: meta.name, icon: meta.icon, id: s.id };
 }
 
 // ---------------------------------------------------------------- 订单
@@ -556,6 +556,28 @@ function finishChapter(id) {
   save();
 }
 
+/** 下一段剧情还差多少：用于交付后的进度提示 */
+function storyGap() {
+  const st = get();
+  for (let i = 0; i < CHAPTERS.length; i++) {
+    const c = CHAPTERS[i];
+    if (st.chapters[c.id]) continue;
+    const t = c.trigger;
+    if (t.type === 'level') {
+      const need = t.value - st.lv;
+      if (need > 0) return '再升 ' + need + ' 级，解锁' + c.title;
+    } else if (t.type === 'orders') {
+      const need = t.value - st.stats.orders;
+      if (need > 0) return '再交付 ' + need + ' 单，解锁' + c.title;
+    } else if (t.type === 'decor') {
+      const d = DECOR.find((x) => x.id === t.value);
+      return '装修【' + (d ? d.name : '新区域') + '】后，解锁' + c.title;
+    }
+    return null; // 已满足条件（或 start 章），由剧情红点提示
+  }
+  return null;
+}
+
 function chapterProgress() {
   const st = get();
   return { done: Object.keys(st.chapters).length, total: CHAPTERS.length };
@@ -584,6 +606,7 @@ module.exports = {
   orderState, deliver, countItem,
   decorStatus, buildDecor,
   nextChapter, hasPendingStory, finishChapter, chapterProgress,
+  storyGap,
   markAlbum, albumCount, albumTotal,
   offlineBonus
 };

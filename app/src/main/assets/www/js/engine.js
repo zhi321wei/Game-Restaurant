@@ -167,6 +167,7 @@ function makeOrder(level, unlockedChains) {
     id: 'o' + Date.now().toString(36) + rnd(999).toString(36),
     name: ORDER.customerNames[ci] || ORDER.customerNames[0],
     icon: ORDER.customerIcons[ci] || '🙂',
+    face: (ORDER.customerFaces && ORDER.customerFaces[ci]) || '',
     line: pick(ORDER.customerLines || cfg.CUSTOMER_LINES),
     items,
     coin,

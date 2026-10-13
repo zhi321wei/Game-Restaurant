@@ -148,6 +148,18 @@
   from { transform: scale(0.6); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+#screen-story .avatar-img {
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 6px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 24px rgba(122, 85, 64, 0.3);
+  animation: bob 2.6s ease-in-out infinite;
+  -webkit-user-drag: none;
+  user-select: none;
+}
 #screen-story .avatar {
   font-size: 110px;
   line-height: 1;

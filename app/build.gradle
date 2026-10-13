@@ -12,12 +12,34 @@ android {
     namespace "com.zhi321wei.romanticrestaurant"
     compileSdk 34
 
+    // v1.2 固定签名：debug/release 都用仓库里的 keystore.p12，
+    // 保证每次发布的 APK 签名一致，新版本可直接覆盖安装且保留存档数据。
+    signingConfigs {
+        fixed {
+            storeFile file("../keystore.p12")
+            storePassword "romantic2026"
+            keyAlias "rr"
+            keyPassword "romantic2026"
+            storeType "PKCS12"
+        }
+    }
+
     defaultConfig {
         applicationId "com.zhi321wei.romanticrestaurant"
         minSdk 26
         targetSdk 34
         versionCode vcode
         versionName ver
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.fixed
+            minifyEnabled false
+        }
+        debug {
+            signingConfig signingConfigs.fixed
+        }
     }
 }
 

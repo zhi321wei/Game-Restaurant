@@ -34,10 +34,10 @@ jobs:
         run: echo "v=$(tr -d '[:space:]' < version.txt)" >> "$GITHUB_OUTPUT"
 
       - name: Build APK
-        run: gradle assembleDebug --no-daemon
+        run: gradle assembleRelease --no-daemon
 
       - name: Rename APK
-        run: cp app/build/outputs/apk/debug/app-debug.apk "romantic-restaurant-v${{ steps.ver.outputs.v }}.apk"
+        run: cp app/build/outputs/apk/release/app-release.apk "romantic-restaurant-v${{ steps.ver.outputs.v }}.apk"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

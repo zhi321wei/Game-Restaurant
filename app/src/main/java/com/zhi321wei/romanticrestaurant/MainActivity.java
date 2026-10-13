@@ -51,6 +51,25 @@ public class MainActivity extends Activity {
         moveTaskToBack(true);
     }
 
+    // v1.2 切后台时静音：暂停页面里的背景音乐，回前台再恢复
+    @Override
+    protected void onPause() {
+        if (webView != null) {
+            webView.evaluateJavascript(
+                "window.__rrAudioSuspend && window.__rrAudioSuspend()", null);
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        if (webView != null) {
+            webView.evaluateJavascript(
+                "window.__rrAudioResume && window.__rrAudioResume()", null);
+        }
+        super.onResume();
+    }
+
     @Override
     protected void onDestroy() {
         if (webView != null) {

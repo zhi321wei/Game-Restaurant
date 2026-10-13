@@ -6,11 +6,11 @@ define("story", function (module, exports, require) {
  */
 
 const ROLES = {
-  kelly: { name: '凯莉', avatar: '👩‍🦰' },
-  girl: { name: '小豆', avatar: '👧' },
-  henry: { name: '亨利', avatar: '🧔' },
-  nana: { name: '娜娜奶奶', avatar: '👵' },
-  cat: { name: '黑猫', avatar: '🐈‍⬛' },
+  kelly: { name: '凯莉', avatar: '👩‍🦰', img: 'faces/kelly.jpg' },
+  girl: { name: '小豆', avatar: '👧', img: 'faces/girl.jpg' },
+  henry: { name: '亨利', avatar: '🧔', img: 'faces/henry.jpg' },
+  nana: { name: '娜娜奶奶', avatar: '👵', img: 'faces/nana.jpg' },
+  cat: { name: '黑猫', avatar: '🐈‍⬛', img: 'faces/cat.jpg' },
   narr: { name: '', avatar: '' }
 };
 

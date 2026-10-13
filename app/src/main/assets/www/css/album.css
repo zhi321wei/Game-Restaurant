@@ -159,3 +159,15 @@
 }
 
 #screen-album .pad { height: 40px; }
+
+/* v1.2 图鉴插图 */
+#screen-album .c-img {
+  width: 84px;
+  height: 84px;
+  border-radius: 16px;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}

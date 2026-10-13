@@ -424,7 +424,7 @@ RR.pages.game = {
     $.sellMask.style.display = d.showSell ? '' : 'none';
     $.sellModal.style.display = d.showSell ? '' : 'none';
     if (d.showSell && d.sellInfo) {
-      $.sellIcon.textContent = d.sellInfo.icon;
+      $.sellIcon.innerHTML = d.sellInfo.id ? '<img class="sell-img" src="assets/items/' + d.sellInfo.id + '.jpg"/>' : d.sellInfo.icon;
       $.sellName.textContent = d.sellInfo.name;
       $.sellPrice.textContent = '+ ' + d.sellInfo.price + ' 🪙';
     }
@@ -454,14 +454,14 @@ RR.pages.game = {
       if (!o) continue;
       html += '<div class="ocard' + (o.ready ? ' ready' : '') + '">' +
         '<div class="o-head">' +
-          '<span class="o-avatar">' + o.icon + '</span>' +
+          '<span class="o-avatar">' + (o.face ? '<img class="o-face" src="assets/faces/' + o.face + '.jpg" draggable="false"/>' : o.icon) + '</span>' +
           '<span class="o-name">' + o.name + '</span>' +
         '</div>' +
         '<div class="o-items">';
       for (var m = 0; m < o.items.length; m++) {
         var it = o.items[m];
         html += '<div class="o-item' + (it.ok ? ' ok' : '') + '">' +
-          '<span class="oi-icon">' + it.icon + '</span>' +
+          '<span class="oi-icon"><img class="oi-img" src="assets/items/' + it.id + '.jpg" draggable="false"/></span>' +
           '<span class="oi-n">' + it.have + '/' + it.n + '</span>' +
         '</div>';
       }
@@ -491,7 +491,7 @@ RR.pages.game = {
       if (it.k === 'gen') {
         html += '<div class="gen" style="' + style + '" data-i="' + it.i + '" data-order="' + it.order + '">' +
           '<div class="gen-inner">' +
-            '<span class="gen-icon">' + it.icon + '</span>' +
+            '<img class="gen-img" src="assets/gens/' + it.id + '.jpg" draggable="false"/>' +
             '<span class="gen-name">' + it.name + '</span>' +
             '<div class="gen-tap">点·拖</div>' +
           '</div>' +
@@ -500,7 +500,7 @@ RR.pages.game = {
         html += '<div class="item' + (pop ? ' pop' : '') + (it.isMax ? ' maxlv' : '') + '" style="' + style +
           '" data-i="' + it.i + '">' +
           '<div class="item-inner">' +
-            '<span class="item-icon">' + it.icon + '</span>' +
+            '<span class="item-icon"><img class="item-img" src="assets/items/' + it.id + '.jpg" draggable="false"/></span>' +
             '<div class="item-lv">' + it.level + '</div>' +
             (it.isMax ? '<div class="item-star">MAX</div>' : '') +
           '</div>' +
@@ -573,13 +573,14 @@ RR.pages.game = {
         id: o.id,
         name: o.name,
         icon: o.icon,
+        face: o.face || '',
         line: o.line,
         coin: o.coin,
         exp: o.exp,
         ready: prog.ok,
         items: prog.detail.map(function (dd) {
           var m = cfg.getItemMeta(dd.id) || { icon: '❓', name: '?' };
-          return { icon: m.icon, name: m.name, have: dd.have, n: dd.n, ok: dd.have >= dd.n };
+          return { id: dd.id, icon: m.icon, name: m.name, have: dd.have, n: dd.n, ok: dd.have >= dd.n };
         })
       };
     });
@@ -813,7 +814,7 @@ RR.pages.game = {
     }
     this.set({
       showSell: true,
-      sellInfo: { icon: r.icon, name: r.name, price: r.price }
+      sellInfo: { icon: r.icon, name: r.name, price: r.price, id: r.id }
     });
     this.render();
     this.pushFloat('+' + r.price, 'coin');
@@ -892,9 +893,11 @@ RR.pages.game = {
     this.render();
     this.pushFloat('+' + r.coin, 'coin');
     this.pushFloat('+' + r.exp + ' exp', 'exp');
-    if (r.ups && r.ups.length) {
-      this.showToast('升级！Lv.' + r.ups[r.ups.length - 1] + ' 🎉');
-    }
+    var msg = '';
+    if (r.ups && r.ups.length) msg += '升级！Lv.' + r.ups[r.ups.length - 1] + ' 🎉 ';
+    var gap = store.storyGap();
+    if (gap) msg += gap;
+    if (msg) this.showToast(msg);
     this.checkStory();
   },
 

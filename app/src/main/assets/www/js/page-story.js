@@ -146,7 +146,9 @@
       void this.$actor.offsetWidth; // 重放说话人弹跳动画
       this.$actor.classList.toggle('hide', !(role && role.avatar));
       if (role && role.avatar) this.$actor.classList.add('pop');
-      this.$avatar.textContent = (role && role.avatar) || '';
+      this.$avatar.innerHTML = (role && role.img)
+        ? '<img class="avatar-img" src="assets/' + role.img + '" draggable="false"/>'
+        : ((role && role.avatar) || '');
       this.$who.style.display = (role && role.name) ? '' : 'none';
       this.$who.textContent = (role && role.name) || '';
       this.$text.textContent = d.text;

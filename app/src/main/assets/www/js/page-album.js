@@ -99,7 +99,7 @@
         g.items.forEach(function (it) {
           html +=
             '<div class="cell' + (it.got ? ' got' : '') + '">' +
-              '<span class="c-ico">' + it.icon + '</span>' +
+              '<span class="c-ico">' + (it.got ? '<img class="c-img" src="assets/items/' + it.id + '.jpg" draggable="false"/>' : it.icon) + '</span>' +
               '<span class="c-name">' + it.name + '</span>' +
               '<span class="c-lv">Lv.' + it.lv + '</span>' +
             '</div>';
