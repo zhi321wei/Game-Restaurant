@@ -150,9 +150,9 @@ RR.pages.game = {
           '</div>' +
         '</div>' +
 
-        '<!-- 订单区（桌面：托盘直接平放在餐桌上，无卡片框） -->' +
+        '<!-- 订单区（v1.8 吧台：顾客立绘站在吧台后，托盘平放台面上） -->' +
         '<div class="orders" data-ref="orders">' +
-          '<img class="table-bg" src="assets/table.png" draggable="false"/>' +
+          '<img class="table-bg" src="assets/counter.png" draggable="false"/>' +
         '</div>' +
 
         '<!-- 自动合成（v1.7 起移到屏幕右上角，仅图标+「合」） -->' +
@@ -334,10 +334,10 @@ RR.pages.game = {
 
   _applyBoard: function () {
     var W = this._win.W, H = this._win.H, statusBar = this._win.statusBar;
-    // 固定区块总高：实测优先，失败用估值（HUD 134 + 桌面备菜区 198 + 信息栏 92 + 底栏 90 + 间距 12 + 安全区 20）
+    // 固定区块总高：实测优先，失败用估值（HUD 134 + 吧台备菜区 320 + 信息栏 92 + 底栏 90 + 间距 12 + 安全区 20）
     // 注意：autobar 自 v1.7 起绝对定位在右上角，不占布局流，不计入 chrome
     var chrome = this._measureChrome();
-    if (chrome === null) chrome = 134 + 198 + 92 + 90 + 12 + 20;
+    if (chrome === null) chrome = 134 + 320 + 92 + 90 + 12 + 20;
     var availH = Math.max(200, H - statusBar - chrome);
     var cellByW = Math.floor((W - 28) / eng.COLS);
     var cellByH = Math.floor(availH / eng.ROWS);
@@ -504,14 +504,19 @@ RR.pages.game = {
     var html = '';
     for (var n = 0; n < d.orders.length; n++) {
       var o = d.orders[n];
-      if (!o) continue;
+      if (!o) {
+        // 空位也占一格，保持三个吧台工位位置稳定
+        html += '<div class="ocard empty"></div>';
+        continue;
+      }
       html += '<div class="ocard' + (o.ready ? ' ready' : '') + '">' +
-        '<div class="o-head">' +
-          '<span class="o-avatar">' + (o.face ? '<img class="o-face" src="assets/faces/' + o.face + '.png" draggable="false"/>' : o.icon) + '</span>' +
-          '<span class="o-name">' + o.name + '</span>' +
-        '</div>' +
-        '<div class="o-plate">' +
-          '<img class="plate-img" src="assets/plate.png" draggable="false"/>' +
+        // 顾客半身立绘：底部压在吧台台面线上
+        (o.face
+          ? '<img class="o-cust" src="assets/faces/' + o.face + '.png" draggable="false"/>'
+          : '<span class="o-cust o-cust-icon">' + o.icon + '</span>') +
+        // 白色快餐托盘平放在台面上，物品摆在托盘里
+        '<div class="o-tray">' +
+          '<img class="tray-img" src="assets/tray.png" draggable="false"/>' +
           '<div class="o-items">';
       for (var m = 0; m < o.items.length; m++) {
         var it = o.items[m];
@@ -521,16 +526,18 @@ RR.pages.game = {
         '</div>';
       }
       html += '</div></div>' +
+        // 柜台正面信息行：顾客名 + 金币 + 交付按钮
         '<div class="o-foot">' +
-          '<div class="o-coin">🪙 ' + o.coin + '</div>' +
-          '<div class="o-btn' + (o.ready ? ' on' : '') + '" data-id="' + o.id + '">' +
+          '<span class="o-name">' + o.name + '</span>' +
+          '<span class="o-coin">🪙 ' + o.coin + '</span>' +
+          '<span class="o-btn' + (o.ready ? ' on' : '') + '" data-id="' + o.id + '">' +
             (o.ready ? '交付' : '备菜') +
-          '</div>' +
+          '</span>' +
         '</div>' +
         (o.ready ? '<div class="o-ready-flag">✓</div>' : '') +
       '</div>';
     }
-    // 只重建订单卡，保留桌面背景图（table-bg 是 orders 的第一个子节点）
+    // 只重建订单卡，保留吧台背景图（table-bg 是 orders 的第一个子节点）
     var wrap = document.createElement('div');
     wrap.innerHTML = html;
     var old = this.$.orders.querySelectorAll('.ocard');

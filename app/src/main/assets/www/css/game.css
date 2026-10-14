@@ -9,7 +9,8 @@
 #screen-game .page {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(180deg, #ffe9ef 0%, #fdf1e6 34%, #f6e6d6 100%);
+  /* v1.8 整体背景：AI 生成的海滨天空 + 沙滩场景 */
+  background: url('../assets/page-bg.png') center center / cover no-repeat, #bfe3f2;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -155,12 +156,14 @@
   text-align: right;
 }
 
-/* ---------------------------------------------------------------- 订单（v1.7 桌面备菜区） */
-/* 备菜区 = 一张横贯屏幕的餐桌桌面，托盘直接平放在桌面上，无卡片框 */
+/* ---------------------------------------------------------------- 订单（v1.8 吧台备菜区） */
+/* 备菜区 = 正视图餐厅吧台：顾客半身立绘站在吧台后，白色托盘平放在台面上 */
+/* 几何（orders 高 320，counter.png 750x320）：墙 0..172 / 台面 172..214 / 柜身 214..320 */
 #screen-game .orders {
   display: flex;
   position: relative;
-  padding: 4px 10px 2px;
+  height: 320px;
+  padding: 8px 10px 0;
 }
 #screen-game .table-bg {
   position: absolute;
@@ -171,63 +174,55 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 100%;
+  object-position: center bottom;
   pointer-events: none;
   -webkit-user-drag: none;
   user-select: none;
 }
 
-/* 订单卡：无框，直接摆在桌面上 */
+/* 订单卡：无框，顾客/托盘/按钮直接摆在吧台上 */
 #screen-game .ocard {
   flex: 1;
+  min-width: 0;
   margin: 0 4px;
-  background: transparent;
-  border-radius: 16px;
-  padding: 4px 4px 2px;
   position: relative;
-  border: 2px solid transparent;
 }
-#screen-game .ocard.ready {
-  border-color: rgba(111, 201, 176, 0.85);
-  background: rgba(234, 250, 243, 0.35);
+/* 顾客半身立绘：底部压在台面线上，站在吧台后面 */
+#screen-game .o-cust {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 144px;          /* 立绘底边 = 320-144 = 176，与台面上沿(172)自然衔接 */
+  width: 168px;
+  height: 168px;
+  z-index: 1;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  filter: drop-shadow(0 3px 4px rgba(122, 85, 64, 0.18));
 }
-
-/* 头像行：压在托盘上方（z-index） */
-#screen-game .o-head {
+/* 无立绘时的 emoji 兜底 */
+#screen-game .o-cust-icon {
   display: flex;
   align-items: center;
-  position: relative;
+  justify-content: center;
+  font-size: 96px;
+  line-height: 1;
+}
+/* 白色快餐托盘：平放在台面上，下沿压住柜身顶部 */
+#screen-game .o-tray {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 100px;          /* 托盘底边 = 320-100 = 220，坐在台面上 */
+  width: 180px;
   z-index: 2;
+  transition: filter 0.25s ease;
 }
-#screen-game .o-avatar {
-  font-size: 26px;
+#screen-game .ocard.ready .o-tray {
+  filter: drop-shadow(0 0 9px rgba(111, 201, 176, 0.95));
 }
-#screen-game .o-face {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-  box-shadow: 0 2px 6px rgba(122, 85, 64, 0.28);
-  border: 2px solid #fff;
-}
-#screen-game .o-name {
-  font-size: 19px;
-  color: #6b4426;
-  font-weight: 800;
-  margin-left: 4px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-}
-
-/* 白色快餐托盘：上沿负边距压住头像底部，形成自然重叠 */
-#screen-game .o-plate {
-  position: relative;
-  margin: -14px 0 0;
-}
-#screen-game .plate-img {
+#screen-game .tray-img {
   width: 100%;
   display: block;
   pointer-events: none;
@@ -238,15 +233,14 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
+  top: 5px;
   bottom: 0;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 0 2px;
 }
-/* 托盘物品：可点击，右下角数量角标（v1.7 图片放大） */
+/* 托盘物品：可点击，右下角数量角标 */
 #screen-game .o-item {
   display: flex;
   flex-direction: column;
@@ -268,8 +262,8 @@
   line-height: 48px;
 }
 #screen-game .oi-img {
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   object-fit: contain;
   display: block;
   pointer-events: none;
@@ -278,8 +272,8 @@
 }
 #screen-game .oi-n {
   position: absolute;
-  right: -6px;
-  bottom: -5px;
+  right: -4px;
+  bottom: -4px;
   min-width: 20px;
   padding: 0 4px;
   box-sizing: border-box;
@@ -296,27 +290,44 @@
   font-weight: 700;
 }
 
+/* 柜身信息行：顾客名 + 金币 + 交付按钮，摆在柜台正面上 */
 #screen-game .o-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 26px;
+  height: 36px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 2px;
+  justify-content: center;
+  z-index: 2;
+}
+#screen-game .o-name {
+  font-size: 17px;
+  color: #6b4426;
+  font-weight: 800;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
 }
 #screen-game .o-coin {
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 800;
   color: #d99520;
+  margin-left: 8px;
+  white-space: nowrap;
 }
 #screen-game .o-btn {
-  height: 36px;
-  line-height: 32px;
-  padding: 0 14px;
+  height: 32px;
+  line-height: 28px;
+  padding: 0 12px;
+  margin-left: 8px;
   border-radius: 999px;
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 700;
   color: #b8a599;
   background: #f2ece6;
   border: 2px solid #e6dbd0;
+  white-space: nowrap;
 }
 #screen-game .o-btn.on {
   color: #fff;
@@ -328,8 +339,8 @@
 
 #screen-game .o-ready-flag {
   position: absolute;
-  right: 6px;
-  top: 4px;
+  right: 8px;
+  top: 8px;
   width: 30px;
   height: 30px;
   line-height: 30px;
@@ -339,6 +350,8 @@
   color: #fff;
   font-size: 18px;
   font-weight: 800;
+  box-shadow: 0 2px 6px rgba(60, 130, 110, 0.35);
+  z-index: 3;
 }
 
 @keyframes breathe {
