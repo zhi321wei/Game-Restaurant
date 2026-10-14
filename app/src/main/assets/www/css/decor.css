@@ -270,6 +270,7 @@
   flex-wrap: wrap;
 }
 #screen-decor .req {
+  position: relative;
   display: flex;
   align-items: center;
   padding: 6px 14px;
@@ -277,6 +278,11 @@
   border-radius: 14px;
   background: #f7f1ea;
   border: 2px solid #ece2d8;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+#screen-decor .req:active {
+  transform: scale(0.94);
 }
 #screen-decor .req.ok {
   background: #eafaf3;
@@ -285,6 +291,41 @@
 #screen-decor .r-ico { font-size: 28px; }
 #screen-decor .r-n { font-size: 20px; color: #a08a7c; margin-left: 6px; }
 #screen-decor .req.ok .r-n { color: #4aa383; }
+
+/* v1.7 需求物品点击提示气泡（挂在 .req 内，滚动自然跟随） */
+#screen-decor .req-tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%);
+  min-width: 168px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: rgba(70, 48, 36, 0.94);
+  color: #fff;
+  font-size: 19px;
+  line-height: 1.45;
+  box-shadow: 0 8px 20px rgba(60, 38, 28, 0.35);
+  z-index: 30;
+  white-space: nowrap;
+  pointer-events: none;
+}
+#screen-decor .req-tip::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: rgba(70, 48, 36, 0.94);
+}
+#screen-decor .rt-name { font-weight: 800; }
+#screen-decor .rt-lv { color: #ffd6a0; margin-top: 2px; }
+#screen-decor .rt-from { color: #c9e8d6; margin-top: 2px; }
+#screen-decor .req.open {
+  border-color: #e8607f;
+  box-shadow: 0 0 0 3px rgba(232, 96, 127, 0.18);
+}
 
 #screen-decor .d-foot {
   display: flex;

@@ -150,18 +150,20 @@ RR.pages.game = {
           '</div>' +
         '</div>' +
 
-        '<!-- 订单区 -->' +
-        '<div class="orders" data-ref="orders"></div>' +
+        '<!-- 订单区（桌面：托盘直接平放在餐桌上，无卡片框） -->' +
+        '<div class="orders" data-ref="orders">' +
+          '<img class="table-bg" src="assets/table.png" draggable="false"/>' +
+        '</div>' +
 
-        '<!-- 自动合成 -->' +
+        '<!-- 自动合成（v1.7 起移到屏幕右上角，仅图标+「合」） -->' +
         '<div class="autobar">' +
           '<div class="btn-auto" data-ref="autoMerge">' +
             '<span class="ba-ico">✨</span>' +
-            '<span class="ba-txt">自动合成</span>' +
+            '<span class="ba-txt">合</span>' +
           '</div>' +
           '<div class="btn-auto all" data-ref="autoMergeAll">' +
             '<span class="ba-ico">⚡</span>' +
-            '<span class="ba-txt">全自动合成</span>' +
+            '<span class="ba-txt">合</span>' +
           '</div>' +
         '</div>' +
 
@@ -316,7 +318,7 @@ RR.pages.game = {
     var $ = this.$;
     if (!$ || !$.hud || typeof $.hud.offsetHeight !== 'number' || $.hud.offsetHeight === 0) return null;
     var h = 0;
-    var els = [$.hud, $.orders, $.autobar, $.infobar, $.tabbar];
+    var els = [$.hud, $.orders, $.infobar, $.tabbar];
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
       if (!el || typeof el.offsetHeight !== 'number' || el.offsetHeight === 0) return null;
@@ -332,9 +334,10 @@ RR.pages.game = {
 
   _applyBoard: function () {
     var W = this._win.W, H = this._win.H, statusBar = this._win.statusBar;
-    // 固定区块总高：实测优先，失败用估值（HUD 134 + 订单区 198 + 自动合成 58 + 信息栏 92 + 底栏 90 + 间距 12 + 安全区 20）
+    // 固定区块总高：实测优先，失败用估值（HUD 134 + 桌面备菜区 198 + 信息栏 92 + 底栏 90 + 间距 12 + 安全区 20）
+    // 注意：autobar 自 v1.7 起绝对定位在右上角，不占布局流，不计入 chrome
     var chrome = this._measureChrome();
-    if (chrome === null) chrome = 134 + 198 + 58 + 92 + 90 + 12 + 20;
+    if (chrome === null) chrome = 134 + 198 + 92 + 90 + 12 + 20;
     var availH = Math.max(200, H - statusBar - chrome);
     var cellByW = Math.floor((W - 28) / eng.COLS);
     var cellByH = Math.floor(availH / eng.ROWS);
@@ -527,7 +530,12 @@ RR.pages.game = {
         (o.ready ? '<div class="o-ready-flag">✓</div>' : '') +
       '</div>';
     }
-    this.$.orders.innerHTML = html;
+    // 只重建订单卡，保留桌面背景图（table-bg 是 orders 的第一个子节点）
+    var wrap = document.createElement('div');
+    wrap.innerHTML = html;
+    var old = this.$.orders.querySelectorAll('.ocard');
+    for (var k = 0; k < old.length; k++) this.$.orders.removeChild(old[k]);
+    while (wrap.firstChild) this.$.orders.appendChild(wrap.firstChild);
   },
 
   // ---------------------------------------------------------------- 棋盘物品层渲染
@@ -545,7 +553,6 @@ RR.pages.game = {
           '<div class="gen-inner">' +
             '<img class="gen-img" src="assets/gens/' + it.id + '.png" draggable="false"/>' +
             '<span class="gen-name">' + it.name + '</span>' +
-            '<div class="gen-tap">点·拖</div>' +
           '</div>' +
         '</div>';
       } else {

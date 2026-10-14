@@ -72,7 +72,16 @@
         var partEl = t.closest ? t.closest('[data-part]') : null;
         if (partEl && self.el.contains(partEl)) {
           self.onPartTap(partEl.dataset.part);
+          return;
         }
+        // v1.7 需求物品点击：旁边弹出 名称/等级/产出容器 提示
+        var reqEl = t.closest ? t.closest('[data-req]') : null;
+        if (reqEl && self.el.contains(reqEl)) {
+          self.onReqTap(reqEl);
+          return;
+        }
+        // 点其他区域收起提示
+        self.hideReqTips();
       });
     },
 
@@ -99,7 +108,7 @@
         var reqs = d.req.map(function (r) {
           var m = cfg.getItemMeta(r.id) || { icon: '❓', name: '?' };
           var have = store.countItem(r.id);
-          return { icon: m.icon, name: m.name, have: have, n: r.n, ok: have >= r.n };
+          return { id: r.id, icon: m.icon, name: m.name, have: have, n: r.n, ok: have >= r.n };
         });
         var btn = '装修';
         if (status === 'done') btn = '已完成';
@@ -238,9 +247,10 @@
         else tag = '<span class="d-tag ready">可改造</span>';
 
         var reqs = d.reqs.map(function (r) {
-          return '<div class="req' + (r.ok ? ' ok' : '') + '">' +
+          return '<div class="req' + (r.ok ? ' ok' : '') + '" data-req="' + r.id + '">' +
             '<span class="r-ico">' + r.icon + '</span>' +
             '<span class="r-n">' + r.have + '/' + r.n + '</span>' +
+            '<div class="req-tip" style="display:none"></div>' +
           '</div>';
         }).join('');
 
@@ -321,6 +331,43 @@
         self.renderList();
       }, 1600);
       if (!store.get().decor[d.id]) this.openBuild(d.id);
+    },
+
+    /** v1.7 需求物品点击：旁边弹出 名称/等级/产出容器 提示（再点一次收起） */
+    onReqTap: function (reqEl) {
+      var tip = reqEl.querySelector('.req-tip');
+      if (!tip) return;
+      var wasOpen = reqEl.classList.contains('open');
+      this.hideReqTips();
+      if (wasOpen) return;
+      var id = reqEl.dataset.req;
+      var m = cfg.getItemMeta(id);
+      if (!m) return;
+      var gen = this._producerOf(id);
+      tip.innerHTML =
+        '<div class="rt-name">' + m.icon + ' ' + m.name + '</div>' +
+        '<div class="rt-lv">等级 Lv.' + m.level + '/' + m.max + '</div>' +
+        '<div class="rt-from">产出容器：' + (gen ? gen.name : '未知容器') + '</div>';
+      tip.style.display = '';
+      reqEl.classList.add('open');
+    },
+
+    hideReqTips: function () {
+      var opened = this._listEl.querySelectorAll('.req.open');
+      for (var i = 0; i < opened.length; i++) {
+        opened[i].classList.remove('open');
+        var tip = opened[i].querySelector('.req-tip');
+        if (tip) tip.style.display = 'none';
+      }
+    },
+
+    /** 物品 id 前缀（chain）-> 生成器配置；与 game 页 _producerOf 同逻辑 */
+    _producerOf: function (id) {
+      if (!this._genByChain) {
+        this._genByChain = {};
+        for (var i = 0; i < cfg.GENS.length; i++) this._genByChain[cfg.GENS[i].chain] = cfg.GENS[i];
+      }
+      return this._genByChain[String(id).split('_')[0]] || null;
     },
 
     openBuild: function (id) {

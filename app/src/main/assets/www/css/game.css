@@ -7,6 +7,7 @@
  */
 
 #screen-game .page {
+  position: relative;
   min-height: 100vh;
   background: linear-gradient(180deg, #ffe9ef 0%, #fdf1e6 34%, #f6e6d6 100%);
   display: flex;
@@ -154,26 +155,41 @@
   text-align: right;
 }
 
-/* ---------------------------------------------------------------- 订单（v1.5 紧凑备菜区） */
+/* ---------------------------------------------------------------- 订单（v1.7 桌面备菜区） */
+/* 备菜区 = 一张横贯屏幕的餐桌桌面，托盘直接平放在桌面上，无卡片框 */
 #screen-game .orders {
   display: flex;
-  padding: 6px 12px 8px;
+  position: relative;
+  padding: 4px 10px 2px;
+}
+#screen-game .table-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 100%;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
+/* 订单卡：无框，直接摆在桌面上 */
 #screen-game .ocard {
   flex: 1;
   margin: 0 4px;
-  background: linear-gradient(180deg, #fffdfa 0%, #fff4ea 100%);
+  background: transparent;
   border-radius: 16px;
-  padding: 6px 6px 5px;
-  box-shadow: 0 4px 12px rgba(122, 85, 64, 0.12);
+  padding: 4px 4px 2px;
   position: relative;
   border: 2px solid transparent;
-  overflow: hidden;
 }
 #screen-game .ocard.ready {
-  border-color: #7fd0a8;
-  box-shadow: 0 4px 14px rgba(111, 201, 176, 0.4);
+  border-color: rgba(111, 201, 176, 0.85);
+  background: rgba(234, 250, 243, 0.35);
 }
 
 /* 头像行：压在托盘上方（z-index） */
@@ -187,8 +203,8 @@
   font-size: 26px;
 }
 #screen-game .o-face {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   object-fit: cover;
   display: block;
@@ -197,18 +213,19 @@
 }
 #screen-game .o-name {
   font-size: 19px;
-  color: #7a5540;
-  font-weight: 700;
+  color: #6b4426;
+  font-weight: 800;
   margin-left: 4px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 /* 白色快餐托盘：上沿负边距压住头像底部，形成自然重叠 */
 #screen-game .o-plate {
   position: relative;
-  margin: -12px 0 0;
+  margin: -14px 0 0;
 }
 #screen-game .plate-img {
   width: 100%;
@@ -229,12 +246,12 @@
   justify-content: center;
   padding: 0 2px;
 }
-/* 托盘物品：可点击，右下角数量角标 */
+/* 托盘物品：可点击，右下角数量角标（v1.7 图片放大） */
 #screen-game .o-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 38px;
+  width: 54px;
   margin: 0 1px;
   position: relative;
   cursor: pointer;
@@ -247,12 +264,12 @@
   filter: drop-shadow(0 0 5px rgba(111, 201, 176, 0.9));
 }
 #screen-game .oi-icon {
-  font-size: 32px;
-  line-height: 36px;
+  font-size: 44px;
+  line-height: 48px;
 }
 #screen-game .oi-img {
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
   object-fit: contain;
   display: block;
   pointer-events: none;
@@ -263,12 +280,12 @@
   position: absolute;
   right: -6px;
   bottom: -5px;
-  min-width: 18px;
-  padding: 0 3px;
+  min-width: 20px;
+  padding: 0 4px;
   box-sizing: border-box;
   text-align: center;
-  font-size: 12px;
-  line-height: 16px;
+  font-size: 13px;
+  line-height: 17px;
   border-radius: 999px;
   color: #fff;
   background: rgba(96, 66, 50, 0.78);
@@ -329,44 +346,49 @@
   50% { transform: scale(1.06); }
 }
 
-/* ---------------------------------------------------------------- 自动合成 */
+/* ---------------------------------------------------------------- 自动合成（v1.7 移到右上角） */
+/* 两个小按钮悬浮在屏幕右上角，不占布局流；实测 chrome 时跳过 autobar */
 #screen-game .autobar {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  z-index: 60;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 2px 0 4px;
+  gap: 8px;
 }
 #screen-game .btn-auto {
   display: flex;
   align-items: center;
-  height: 48px;
-  padding: 0 28px;
+  justify-content: center;
+  height: 34px;
+  min-width: 34px;
+  padding: 0 8px;
   border-radius: 999px;
-  font-size: 23px;
+  font-size: 16px;
   font-weight: 800;
   color: #fff;
   background: linear-gradient(135deg, #ffd48a 0%, #f2a03c 100%);
-  border: 2px solid rgba(255, 255, 255, 0.65);
-  box-shadow: 0 4px 12px rgba(226, 150, 60, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 2px 8px rgba(226, 150, 60, 0.4);
   text-shadow: 0 1px 2px rgba(160, 100, 20, 0.25);
 }
-/* 全自动合成：玫红色，和「合一对」区分开 */
+/* 全自动合成：蓝紫色，和「合」的橙色明显区分 */
 #screen-game .btn-auto.all {
-  background: linear-gradient(135deg, #ff9fb5 0%, #e8607f 100%);
-  box-shadow: 0 4px 12px rgba(232, 96, 127, 0.38);
-  text-shadow: 0 1px 2px rgba(150, 40, 70, 0.28);
+  background: linear-gradient(135deg, #a9b8ff 0%, #6d7fe8 100%);
+  box-shadow: 0 2px 8px rgba(109, 127, 232, 0.42);
+  text-shadow: 0 1px 2px rgba(40, 55, 150, 0.3);
 }
 #screen-game .btn-auto:active {
   transform: scale(0.95);
   opacity: 0.92;
 }
 #screen-game .ba-ico {
-  font-size: 26px;
-  margin-right: 8px;
+  font-size: 16px;
+  margin-right: 2px;
 }
 #screen-game .ba-txt {
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 
 /* ---------------------------------------------------------------- 棋盘 */
@@ -530,14 +552,6 @@
   color: #f4e3d2;
   line-height: 22px;
   margin-top: 2px;
-}
-#screen-game .gen-tap {
-  position: absolute;
-  right: 4px;
-  bottom: 3px;
-  font-size: 15px;
-  color: #ffd9a8;
-  opacity: 0.85;
 }
 #screen-game .gen:not(.dragging):active .gen-inner {
   transform: scale(0.94);
