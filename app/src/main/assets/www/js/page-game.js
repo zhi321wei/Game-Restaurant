@@ -1,4 +1,4 @@
-/* 浪漫餐厅 · 经营主页（WebView 版）
+/* 熊家餐厅 · 经营主页（WebView 版）
  * 移植自 miniprogram/pages/game/game.js，功能与原版一致。
  * 差异：WXML 的 {{}} 绑定 / wx:if / wx:for 改为 JS DOM 渲染；
  *       slider / switch 组件改为 <input type="range"> / <input type="checkbox">。
@@ -126,7 +126,7 @@ RR.pages.game = {
           '<div class="hud-row">' +
             '<div class="brand">' +
               '<span class="brand-icon">🍽️</span>' +
-              '<span class="brand-text">浪漫餐厅</span>' +
+              '<span class="brand-text">熊家餐厅</span>' +
             '</div>' +
             '<div class="res">' +
               '<div class="pill gear on" data-ref="gear"><span class="p-ico" data-ref="gearIco">🎵</span></div>' +
@@ -758,10 +758,68 @@ RR.pages.game = {
       return;
     }
     this.render();
-    this.set({ flashIdx: r.slot });
-    var self = this;
-    setTimeout(function () { self.set({ flashIdx: -1 }); }, 320);
+    this._flyToSlot(r);
     this.pushFloat('-' + cfg.STAMINA.costPerTap + ' 体力', 'st');
+  },
+
+  /** v1.6 生成物飞入动画：物品从生成器抛物线跳到目标格，落地后弹一下 */
+  _flyToSlot: function (r) {
+    var cell = this.d.cell;
+    var layer = this.$.itemsLayer;
+    if (!layer || !r || r.slot < 0) return;
+    var from = (typeof r.genSlot === 'number' && r.genSlot >= 0) ? r.genSlot : r.slot;
+    var x0 = eng.colOf(from) * cell + cell / 2;
+    var y0 = eng.rowOf(from) * cell + cell / 2;
+    var x1 = eng.colOf(r.slot) * cell + cell / 2;
+    var y1 = eng.rowOf(r.slot) * cell + cell / 2;
+    var dx = x1 - x0;
+    var dy = y1 - y0;
+
+    // 动画期间先藏起目标格的物品，落地再弹出
+    var targetEl = this._itemEls ? this._itemEls[r.slot] : null;
+    if (targetEl) targetEl.style.visibility = 'hidden';
+
+    var fly = document.createElement('div');
+    fly.className = 'fly-item';
+    var size = Math.round(cell * 0.72);
+    fly.style.width = size + 'px';
+    fly.style.height = size + 'px';
+    fly.style.left = (x0 - size / 2) + 'px';
+    fly.style.top = (y0 - size / 2) + 'px';
+    fly.innerHTML = '<img src="assets/items/' + r.itemId + '.png" draggable="false"/>';
+    layer.appendChild(fly);
+
+    var lift = Math.max(46, cell * 0.9) + Math.abs(dy) * 0.12;
+    var settled = false;
+    var done = function () {
+      if (settled) return;
+      settled = true;
+      if (fly.parentNode) fly.parentNode.removeChild(fly);
+      if (targetEl) {
+        targetEl.style.visibility = '';
+        targetEl.classList.add('pop');
+        setTimeout(function () { targetEl.classList.remove('pop'); }, 400);
+      }
+    };
+    // 兜底：部分环境 WAAPI 的 finished 不触发（无头/旧内核），700ms 后强制收尾
+    setTimeout(done, 700);
+    try {
+      var anim = fly.animate(
+        [
+          { transform: 'translate(0px, 0px) scale(0.55)', offset: 0, easing: 'cubic-bezier(.2,.6,.3,1)' },
+          { transform: 'translate(' + (dx * 0.5) + 'px, ' + (dy * 0.5 - lift) + 'px) scale(1.12)', offset: 0.45, easing: 'cubic-bezier(.5,0,.75,.6)' },
+          { transform: 'translate(' + dx + 'px, ' + dy + 'px) scale(1)', offset: 1 }
+        ],
+        { duration: 420, fill: 'forwards' }
+      );
+      if (anim && anim.finished) {
+        anim.finished.then(done)['catch'](function () {});
+      } else {
+        setTimeout(done, 440);
+      }
+    } catch (e) {
+      done();
+    }
   },
 
   // ---------------------------------------------------------------- 拖拽

@@ -1,6 +1,6 @@
 define("config", function (module, exports, require) {
 /**
- * 浪漫餐厅 · 核心配置
+ * 熊家餐厅 · 核心配置
  * 合成链 / 生成器 / 体力 / 等级 / 订单规则
  *
  * 物品 id 规则：`${chainId}_${level}`，如 coffee_3

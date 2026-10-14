@@ -1,6 +1,6 @@
 define("story", function (module, exports, require) {
 /**
- * 浪漫餐厅 · 剧情
+ * 熊家餐厅 · 剧情
  * trigger: { type: 'start' | 'level' | 'decor' | 'orders', value }
  * who: kelly 凯莉 / girl 小豆 / henry 亨利 / nana 娜娜 / cat 黑猫 / narr 旁白
  */
@@ -26,7 +26,7 @@ const CHAPTERS = [
       { who: 'narr', text: '离婚协议签完的那天下午，凯莉带着女儿小豆，坐上了回浪尾岛的末班船。' },
       { who: 'kelly', text: '十年了……妈妈留下的餐厅，居然变成了这样。' },
       { who: 'girl', text: '妈妈，这里有好多灰。我们真的要住这里吗？' },
-      { who: 'kelly', text: '嗯。妈妈想把这里重新开起来——叫「浪漫餐厅」。' },
+      { who: 'kelly', text: '嗯。妈妈想把这里重新开起来——叫「熊家餐厅」。' },
       { who: 'girl', text: '那我能当小服务员吗！' },
       { who: 'kelly', text: '当然。不过在那之前，我们得先把这里收拾干净。' },
       { who: 'narr', text: '墙角有什么东西动了一下。一双绿色的眼睛，在暗处静静地看着她们。' }
@@ -127,7 +127,7 @@ const CHAPTERS = [
     title: '第八章 · 老板娘',
     trigger: { type: 'level', value: 12 },
     lines: [
-      { who: 'nana', text: '如今的浪漫餐厅，可比你妈妈当年还热闹。' },
+      { who: 'nana', text: '如今的熊家餐厅，可比你妈妈当年还热闹。' },
       { who: 'kelly', text: '还差得远呢。我想让整个岛的人都来这儿吃顿饭。' },
       { who: 'girl', text: '妈妈现在笑起来，和以前不一样了！' },
       { who: 'kelly', text: '是吗……大概是因为，这次是给自己干活吧。' }
@@ -172,7 +172,7 @@ const CHAPTERS = [
     trigger: { type: 'decor', value: 'stage' },
     lines: [
       { who: 'narr', text: '开业那天晚上，露台的小舞台亮起了灯，整个浪尾岛的人都来了。' },
-      { who: 'kelly', text: '这家餐厅叫「浪漫餐厅」。浪漫不是玫瑰和烛光……' },
+      { who: 'kelly', text: '这家餐厅叫「熊家餐厅」。浪漫不是玫瑰和烛光……' },
       { who: 'kelly', text: '是自己把碎掉的东西，一块一块拼回去。' },
       { who: 'girl', text: '妈妈，黑猫也在听！' },
       { who: 'narr', text: '海风吹过来，招牌上的霓虹灯一闪一闪，像是在笑。' }

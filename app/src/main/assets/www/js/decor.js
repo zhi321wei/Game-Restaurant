@@ -1,6 +1,6 @@
 define("decor", function (module, exports, require) {
 /**
- * 浪漫餐厅 · 装修节点
+ * 熊家餐厅 · 装修节点
  * part: 对应餐厅场景中的元素；完成后场景点亮
  * req:  { id: 物品id, n: 数量 }
  */

@@ -1,9 +1,12 @@
 /* 图鉴页样式：移植自 pages/album/album.wxss（rpx→px，选择器加 #screen-album 前缀） */
 #screen-album .page {
-  min-height: 100vh;
+  /* v1.6 修复无法下滑：screen 容器 overflow:hidden，必须用确定高度 +
+     flex 分配，让 .body 成为唯一滚动区（min-height:100vh 会被裁切且无处滚动） */
+  height: 100%;
   background: linear-gradient(180deg, #ffe9ef 0%, #fdf1e6 30%, #f6e6d6 100%);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 #screen-album .nav {
@@ -44,6 +47,7 @@
 }
 
 #screen-album .summary {
+  flex: none;
   margin: 16px 24px;
   padding: 24px 28px;
   background: #fff;
@@ -96,8 +100,12 @@
 /* 原 scroll-view scroll-y：Web 端用 overflow-y 滚动 */
 #screen-album .body {
   flex: 1;
+  min-height: 0; /* flex 子项默认 min-height:auto 会拒绝收缩，导致无法滚动 */
   padding: 0 24px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 
 #screen-album .group {

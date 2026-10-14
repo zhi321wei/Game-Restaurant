@@ -1,6 +1,6 @@
 define("store", function (module, exports, require) {
 /**
- * 浪漫餐厅 · 状态与存档
+ * 熊家餐厅 · 状态与存档
  */
 const cfg = require('./config.js');
 const eng = require('./engine.js');
@@ -290,7 +290,7 @@ function tapGen(genOrder) {
   st.stats.taps += 1;
   markAlbum(id);
   saveLazy();
-  return { ok: true, slot: target, itemId: id, genId: g.id, stamina: st.stamina };
+  return { ok: true, slot: target, itemId: id, genId: g.id, genSlot: gi, stamina: st.stamina };
 }
 
 // ---------------------------------------------------------------- 拖拽

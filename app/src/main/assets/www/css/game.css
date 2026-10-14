@@ -1,4 +1,4 @@
-/* 浪漫餐厅 · 经营主页样式
+/* 熊家餐厅 · 经营主页样式
  * 移植自 miniprogram/pages/game/game.wxss：
  *   - 所有选择器加 #screen-game 前缀作用域
  *   - 1rpx = 1px（视口 width=750），数值不变
@@ -475,6 +475,21 @@
   0% { transform: scale(0.6); }
   55% { transform: scale(1.22); }
   100% { transform: scale(1); }
+}
+
+/* v1.6 生成物飞入动画：从生成器跳到目标格的飞行元素 */
+#screen-game .fly-item {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  will-change: transform;
+}
+#screen-game .fly-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 4px 6px rgba(60, 38, 28, 0.4));
 }
 
 /* 生成器 */

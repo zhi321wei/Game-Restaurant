@@ -1,6 +1,6 @@
 define("engine", function (module, exports, require) {
 /**
- * 浪漫餐厅 · 规则引擎（纯函数，不碰状态）
+ * 熊家餐厅 · 规则引擎（纯函数，不碰状态）
  */
 const cfg = require('./config.js');
 

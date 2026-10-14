@@ -1,6 +1,6 @@
 define("audio", function (module, exports, require) {
 /**
- * 浪漫餐厅 · 背景音乐
+ * 熊家餐厅 · 背景音乐
  *
  * 单例 InnerAudioContext，循环播放 bg.mp3。
  * 开关 / 音量 / 静音三项设置持久化到 Storage（rr_audio_v1），下次进游戏自动恢复。
