@@ -154,58 +154,61 @@
   text-align: right;
 }
 
-/* ---------------------------------------------------------------- 订单 */
+/* ---------------------------------------------------------------- 订单（v1.5 紧凑备菜区） */
 #screen-game .orders {
   display: flex;
-  padding: 8px 16px 12px;
+  padding: 6px 12px 8px;
 }
 
 #screen-game .ocard {
   flex: 1;
-  margin: 0 6px;
+  margin: 0 4px;
   background: linear-gradient(180deg, #fffdfa 0%, #fff4ea 100%);
-  border-radius: 22px;
-  padding: 10px 10px 12px;
-  box-shadow: 0 6px 16px rgba(122, 85, 64, 0.14);
+  border-radius: 16px;
+  padding: 6px 6px 5px;
+  box-shadow: 0 4px 12px rgba(122, 85, 64, 0.12);
   position: relative;
-  border: 3px solid transparent;
+  border: 2px solid transparent;
   overflow: hidden;
 }
 #screen-game .ocard.ready {
   border-color: #7fd0a8;
-  box-shadow: 0 6px 18px rgba(111, 201, 176, 0.4);
+  box-shadow: 0 4px 14px rgba(111, 201, 176, 0.4);
 }
 
+/* 头像行：压在托盘上方（z-index） */
 #screen-game .o-head {
   display: flex;
   align-items: center;
+  position: relative;
+  z-index: 2;
 }
 #screen-game .o-avatar {
-  font-size: 30px;
+  font-size: 26px;
 }
 #screen-game .o-face {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   object-fit: cover;
   display: block;
-  box-shadow: 0 2px 6px rgba(122, 85, 64, 0.25);
+  box-shadow: 0 2px 6px rgba(122, 85, 64, 0.28);
   border: 2px solid #fff;
 }
 #screen-game .o-name {
-  font-size: 22px;
+  font-size: 19px;
   color: #7a5540;
   font-weight: 700;
-  margin-left: 6px;
+  margin-left: 4px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-/* 餐盘：头像下方，物品直接摆在盘子上 */
+/* 白色快餐托盘：上沿负边距压住头像底部，形成自然重叠 */
 #screen-game .o-plate {
   position: relative;
-  margin: 6px 0 2px;
+  margin: -12px 0 0;
 }
 #screen-game .plate-img {
   width: 100%;
@@ -224,30 +227,32 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  padding: 0 6px;
+  padding: 0 2px;
 }
+/* 托盘物品：可点击，右下角数量角标 */
 #screen-game .o-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 40px;
-  margin: 0 2px;
+  width: 38px;
+  margin: 0 1px;
   position: relative;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+#screen-game .o-item:active {
+  transform: scale(0.88);
 }
 #screen-game .o-item.ok .oi-img {
   filter: drop-shadow(0 0 5px rgba(111, 201, 176, 0.9));
 }
-#screen-game .o-item.ok .oi-n {
-  color: #4aa383;
-  font-weight: 700;
-}
 #screen-game .oi-icon {
-  font-size: 28px;
-  line-height: 32px;
+  font-size: 32px;
+  line-height: 36px;
 }
 #screen-game .oi-img {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
   display: block;
   pointer-events: none;
@@ -255,30 +260,42 @@
   user-select: none;
 }
 #screen-game .oi-n {
-  font-size: 17px;
-  color: #a08a7c;
-  line-height: 20px;
+  position: absolute;
+  right: -6px;
+  bottom: -5px;
+  min-width: 18px;
+  padding: 0 3px;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 12px;
+  line-height: 16px;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(96, 66, 50, 0.78);
+  box-shadow: 0 1px 2px rgba(122, 85, 64, 0.3);
 }
 #screen-game .o-item.ok .oi-n {
-  color: #4aa383;
+  background: #4aa383;
+  font-weight: 700;
 }
 
 #screen-game .o-foot {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-top: 2px;
 }
 #screen-game .o-coin {
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 800;
   color: #d99520;
 }
 #screen-game .o-btn {
-  height: 44px;
-  line-height: 40px;
-  padding: 0 20px;
+  height: 36px;
+  line-height: 32px;
+  padding: 0 14px;
   border-radius: 999px;
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 700;
   color: #b8a599;
   background: #f2ece6;
@@ -318,15 +335,15 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  padding: 2px 0 6px;
+  padding: 2px 0 4px;
 }
 #screen-game .btn-auto {
   display: flex;
   align-items: center;
-  height: 52px;
-  padding: 0 30px;
+  height: 48px;
+  padding: 0 28px;
   border-radius: 999px;
-  font-size: 25px;
+  font-size: 23px;
   font-weight: 800;
   color: #fff;
   background: linear-gradient(135deg, #ffd48a 0%, #f2a03c 100%);
@@ -829,9 +846,9 @@
 /* v1.4 棋盘下方常驻物品信息栏 */
 #screen-game .infobar {
   flex: none;
-  height: 92px;
+  height: 86px;
   margin: 0 16px 6px;
-  border-radius: 20px;
+  border-radius: 18px;
   background: linear-gradient(180deg, #fffdfa 0%, #fff4ea 100%);
   box-shadow: 0 6px 16px rgba(122, 85, 64, 0.14);
   border: 2px solid #f0e0d0;
@@ -851,8 +868,8 @@
   width: 100%;
 }
 #screen-game .info-img {
-  width: 64px;
-  height: 64px;
+  width: 58px;
+  height: 58px;
   object-fit: contain;
   margin-right: 14px;
   pointer-events: none;

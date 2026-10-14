@@ -48,8 +48,8 @@ RR.pages.game = {
     flashIdx: -1,
     hintIdx: -1,
 
-    // 物品信息面板（常驻，点击物品打开，再点一次收起）
-    infoIdx: -1,
+    // 物品信息面板（常驻，点击物品/托盘物品打开，再点一次收起）
+    // 实际状态挂在实例上：this._infoKey（'slot:N' / 'id:xxx'）+ this._infoSlot
 
     // 设置（背景音乐 / 音效）
     showSettings: false,
@@ -71,6 +71,8 @@ RR.pages.game = {
   init: function () {
     if (!this.el) this.el = document.getElementById('screen-game');
     store.load();
+    this._infoKey = null;   // 当前信息面板来源：'slot:N'（棋盘）或 'id:xxx'（订单托盘）
+    this._infoSlot = -1;    // 来自棋盘时的格子下标（出售用），-1 表示非棋盘来源
     this._buildSkeleton();
     this.initLayout();
     this._bindEvents();
@@ -164,13 +166,13 @@ RR.pages.game = {
         '</div>' +
 
         '<!-- 棋盘 -->' +
-        '<div class="board-wrap">' +
+        '<div class="board-wrap" data-ref="boardWrap">' +
           '<div class="board" data-ref="board"></div>' +
         '</div>' +
 
         '<!-- 物品信息栏（常驻，不自动消失） -->' +
         '<div class="infobar" data-ref="infobar">' +
-          '<div class="info-empty" data-ref="infoEmpty">点击棋盘上的物品，查看它的来历</div>' +
+          '<div class="info-empty" data-ref="infoEmpty">点击棋盘物品或备菜托盘，查看它的来历</div>' +
           '<div class="info-body" data-ref="infoBody" style="display:none">' +
             '<img class="info-img" data-ref="infoImg" draggable="false"/>' +
             '<div class="info-text">' +
@@ -263,10 +265,12 @@ RR.pages.game = {
     $.autoMerge.addEventListener('click', function () { self.onAutoMerge(); });
     $.autoMergeAll.addEventListener('click', function () { self.onAutoMergeAll(); });
 
-    // 订单卡「交付/备菜」按钮（事件委托，订单区每次 render 重建）
+    // 订单卡「交付/备菜」按钮 + 托盘物品点击（事件委托，订单区每次 render 重建）
     $.orders.addEventListener('click', function (e) {
       var btn = e.target.closest ? e.target.closest('.o-btn') : null;
-      if (btn && $.orders.contains(btn)) self.onDeliver(btn.dataset.id);
+      if (btn && $.orders.contains(btn)) { self.onDeliver(btn.dataset.id); return; }
+      var oi = e.target.closest ? e.target.closest('.o-item') : null;
+      if (oi && $.orders.contains(oi)) self.onTapOrderItem(oi.dataset.id);
     });
 
     $.infoSell.addEventListener('click', function (e) {
@@ -303,13 +307,38 @@ RR.pages.game = {
     var H = info.windowHeight || 667;
     // WebView 端沉浸式全屏，shim 返回 0
     var statusBar = info.statusBarHeight || 0;
+    this._win = { W: W, H: H, statusBar: statusBar };
+    this._applyBoard();
+  },
 
-    // 预留：状态栏 + HUD + 订单区(头像+餐盘) + 自动合成条 34 + 信息栏 96 + 底部栏 + 安全区
-    var reserve = statusBar + 40 + 196 + 34 + 96 + 76 + 20;
-    var availH = Math.max(240, H - reserve);
+  /** 实测页面各固定区块高度，反推棋盘可用空间（防止信息栏/底栏被挤出屏幕） */
+  _measureChrome: function () {
+    var $ = this.$;
+    if (!$ || !$.hud || typeof $.hud.offsetHeight !== 'number' || $.hud.offsetHeight === 0) return null;
+    var h = 0;
+    var els = [$.hud, $.orders, $.autobar, $.infobar, $.tabbar];
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (!el || typeof el.offsetHeight !== 'number' || el.offsetHeight === 0) return null;
+      var cs = getComputedStyle(el);
+      h += el.offsetHeight + (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
+    }
+    if ($.boardWrap) {
+      var cs2 = getComputedStyle($.boardWrap);
+      h += (parseFloat(cs2.paddingTop) || 0) + (parseFloat(cs2.paddingBottom) || 0);
+    }
+    return h;
+  },
+
+  _applyBoard: function () {
+    var W = this._win.W, H = this._win.H, statusBar = this._win.statusBar;
+    // 固定区块总高：实测优先，失败用估值（HUD 134 + 订单区 198 + 自动合成 58 + 信息栏 92 + 底栏 90 + 间距 12 + 安全区 20）
+    var chrome = this._measureChrome();
+    if (chrome === null) chrome = 134 + 198 + 58 + 92 + 90 + 12 + 20;
+    var availH = Math.max(200, H - statusBar - chrome);
     var cellByW = Math.floor((W - 28) / eng.COLS);
     var cellByH = Math.floor(availH / eng.ROWS);
-    var cell = Math.max(40, Math.min(cellByW, cellByH));
+    var cell = Math.max(30, Math.min(cellByW, cellByH));
 
     var d = this.d;
     d.cell = cell;
@@ -483,7 +512,7 @@ RR.pages.game = {
           '<div class="o-items">';
       for (var m = 0; m < o.items.length; m++) {
         var it = o.items[m];
-        html += '<div class="o-item' + (it.ok ? ' ok' : '') + '">' +
+        html += '<div class="o-item' + (it.ok ? ' ok' : '') + '" data-id="' + it.id + '">' +
           '<span class="oi-icon"><img class="oi-img" src="assets/items/' + it.id + '.png" draggable="false"/></span>' +
           '<span class="oi-n">' + it.have + '/' + it.n + '</span>' +
         '</div>';
@@ -545,8 +574,8 @@ RR.pages.game = {
       el.addEventListener('touchcancel', this._hEnd);
     }
     // 信息面板指向的格子已空/变了 -> 收起
-    if (this.d.infoIdx >= 0) {
-      var cur = store.get().slots[this.d.infoIdx];
+    if (this._infoSlot >= 0) {
+      var cur = store.get().slots[this._infoSlot];
       if (!cur || cur.k !== 'item') this.hideItemInfo();
     }
   },
@@ -829,16 +858,26 @@ RR.pages.game = {
     this.render();
   },
 
-  /** 点击物品：打开/关闭底部信息面板（常驻，不自动消失） */
+  /** 点击棋盘物品：打开/关闭底部信息面板（常驻，不自动消失） */
   tryTapItem: function (idx) {
     var st = store.get();
     var s = st.slots[idx];
     if (!s || s.k !== 'item') return;
-    if (this.d.infoIdx === idx) {
+    if (this._infoKey === 'slot:' + idx) {
       this.hideItemInfo();
       return;
     }
-    this.showItemInfo(idx);
+    this.showItemInfo(s.id, idx);
+  },
+
+  /** 点击备菜托盘上的需求物品：同样打开信息面板（不可出售） */
+  onTapOrderItem: function (id) {
+    if (!id) return;
+    if (this._infoKey === 'id:' + id) {
+      this.hideItemInfo();
+      return;
+    }
+    this.showItemInfo(id, -1);
   },
 
   /** 物品 id -> 产出它的生成器 */
@@ -850,32 +889,37 @@ RR.pages.game = {
     return this._genByChain[String(id).split('_')[0]] || null;
   },
 
-  showItemInfo: function (idx) {
-    var st = store.get();
-    var s = st.slots[idx];
-    if (!s || s.k !== 'item') return;
-    var m = cfg.getItemMeta(s.id);
-    var gen = this._producerOf(s.id);
-    this.d.infoIdx = idx;
-    this.$.infoImg.src = 'assets/items/' + s.id + '.png';
+  /**
+   * 显示物品信息面板
+   * @param {string} id 物品 id
+   * @param {number} slotIdx 来源格子下标（>=0 棋盘，可出售；-1 订单托盘，不出售）
+   */
+  showItemInfo: function (id, slotIdx) {
+    var m = cfg.getItemMeta(id);
+    if (!m) return;
+    var gen = this._producerOf(id);
+    this._infoKey = slotIdx >= 0 ? 'slot:' + slotIdx : 'id:' + id;
+    this._infoSlot = slotIdx;
+    this.$.infoImg.src = 'assets/items/' + id + '.png';
     this.$.infoName.textContent = m.name;
     this.$.infoLv.textContent = 'Lv.' + m.level + '/' + m.max;
     this.$.infoFrom.textContent = gen ? gen.name : '未知容器';
-    this.$.infoSell.style.display = m.level >= m.max ? '' : 'none';
+    this.$.infoSell.style.display = (slotIdx >= 0 && m.level >= m.max) ? '' : 'none';
     this.$.infoEmpty.style.display = 'none';
     this.$.infoBody.style.display = '';
   },
 
   hideItemInfo: function () {
-    this.d.infoIdx = -1;
+    this._infoKey = null;
+    this._infoSlot = -1;
     if (!this.$ || !this.$.infobar) return;
     this.$.infoEmpty.style.display = '';
     this.$.infoBody.style.display = 'none';
   },
 
-  /** 信息栏里的出售按钮（满级物品） */
+  /** 信息栏里的出售按钮（满级物品，仅棋盘来源） */
   sellFromInfo: function () {
-    var idx = this.d.infoIdx;
+    var idx = this._infoSlot;
     if (idx < 0) return;
     var r = store.sell(idx);
     this.hideItemInfo();
