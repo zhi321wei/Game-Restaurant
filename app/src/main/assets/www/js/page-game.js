@@ -424,7 +424,7 @@ RR.pages.game = {
     $.sellMask.style.display = d.showSell ? '' : 'none';
     $.sellModal.style.display = d.showSell ? '' : 'none';
     if (d.showSell && d.sellInfo) {
-      $.sellIcon.innerHTML = d.sellInfo.id ? '<img class="sell-img" src="assets/items/' + d.sellInfo.id + '.jpg"/>' : d.sellInfo.icon;
+      $.sellIcon.innerHTML = d.sellInfo.id ? '<img class="sell-img" src="assets/items/' + d.sellInfo.id + '.png"/>' : d.sellInfo.icon;
       $.sellName.textContent = d.sellInfo.name;
       $.sellPrice.textContent = '+ ' + d.sellInfo.price + ' 🪙';
     }
@@ -454,14 +454,14 @@ RR.pages.game = {
       if (!o) continue;
       html += '<div class="ocard' + (o.ready ? ' ready' : '') + '">' +
         '<div class="o-head">' +
-          '<span class="o-avatar">' + (o.face ? '<img class="o-face" src="assets/faces/' + o.face + '.jpg" draggable="false"/>' : o.icon) + '</span>' +
+          '<span class="o-avatar">' + (o.face ? '<img class="o-face" src="assets/faces/' + o.face + '.png" draggable="false"/>' : o.icon) + '</span>' +
           '<span class="o-name">' + o.name + '</span>' +
         '</div>' +
         '<div class="o-items">';
       for (var m = 0; m < o.items.length; m++) {
         var it = o.items[m];
         html += '<div class="o-item' + (it.ok ? ' ok' : '') + '">' +
-          '<span class="oi-icon"><img class="oi-img" src="assets/items/' + it.id + '.jpg" draggable="false"/></span>' +
+          '<span class="oi-icon"><img class="oi-img" src="assets/items/' + it.id + '.png" draggable="false"/></span>' +
           '<span class="oi-n">' + it.have + '/' + it.n + '</span>' +
         '</div>';
       }
@@ -491,7 +491,7 @@ RR.pages.game = {
       if (it.k === 'gen') {
         html += '<div class="gen" style="' + style + '" data-i="' + it.i + '" data-order="' + it.order + '">' +
           '<div class="gen-inner">' +
-            '<img class="gen-img" src="assets/gens/' + it.id + '.jpg" draggable="false"/>' +
+            '<img class="gen-img" src="assets/gens/' + it.id + '.png" draggable="false"/>' +
             '<span class="gen-name">' + it.name + '</span>' +
             '<div class="gen-tap">点·拖</div>' +
           '</div>' +
@@ -500,7 +500,7 @@ RR.pages.game = {
         html += '<div class="item' + (pop ? ' pop' : '') + (it.isMax ? ' maxlv' : '') + '" style="' + style +
           '" data-i="' + it.i + '">' +
           '<div class="item-inner">' +
-            '<span class="item-icon"><img class="item-img" src="assets/items/' + it.id + '.jpg" draggable="false"/></span>' +
+            '<span class="item-icon"><img class="item-img" src="assets/items/' + it.id + '.png" draggable="false"/></span>' +
             '<div class="item-lv">' + it.level + '</div>' +
             (it.isMax ? '<div class="item-star">MAX</div>' : '') +
           '</div>' +
@@ -878,7 +878,7 @@ RR.pages.game = {
   onAddStamina: function () {
     var r = store.addStamina(100);
     this.render();
-    this.showToast('老公给你加体力 ❤️');
+    this.showToast('加体力成功');
     this.pushFloat('+' + r.gained + ' 体力', 'st');
   },
 

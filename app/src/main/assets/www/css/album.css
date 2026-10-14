@@ -162,8 +162,8 @@
 
 /* v1.2 图鉴插图 */
 #screen-album .c-img {
-  width: 84px;
-  height: 84px;
+  width: 92px;
+  height: 92px;
   border-radius: 16px;
   object-fit: cover;
   display: block;
