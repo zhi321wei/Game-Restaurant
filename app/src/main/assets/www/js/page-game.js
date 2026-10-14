@@ -48,6 +48,9 @@ RR.pages.game = {
     flashIdx: -1,
     hintIdx: -1,
 
+    // 物品信息面板（常驻，点击物品打开，再点一次收起）
+    infoIdx: -1,
+
     // 设置（背景音乐 / 音效）
     showSettings: false,
     bgmOn: true,
@@ -165,6 +168,19 @@ RR.pages.game = {
           '<div class="board" data-ref="board"></div>' +
         '</div>' +
 
+        '<!-- 物品信息栏（常驻，不自动消失） -->' +
+        '<div class="infobar" data-ref="infobar">' +
+          '<div class="info-empty" data-ref="infoEmpty">点击棋盘上的物品，查看它的来历</div>' +
+          '<div class="info-body" data-ref="infoBody" style="display:none">' +
+            '<img class="info-img" data-ref="infoImg" draggable="false"/>' +
+            '<div class="info-text">' +
+              '<div class="info-name" data-ref="infoName"></div>' +
+              '<div class="info-sub"><span data-ref="infoLv"></span> · 产出：<span data-ref="infoFrom"></span></div>' +
+            '</div>' +
+            '<div class="o-btn info-sell" data-ref="infoSell" style="display:none">出售</div>' +
+          '</div>' +
+        '</div>' +
+
         '<!-- 底部栏 -->' +
         '<div class="tabbar safe-bottom">' +
           '<div class="tab" data-ref="goDecor">' +
@@ -253,6 +269,11 @@ RR.pages.game = {
       if (btn && $.orders.contains(btn)) self.onDeliver(btn.dataset.id);
     });
 
+    $.infoSell.addEventListener('click', function (e) {
+      e.stopPropagation();
+      self.sellFromInfo();
+    });
+
     $.goDecor.addEventListener('click', function () { self.goDecor(); });
     $.openStory.addEventListener('click', function () { self.openStory(); });
     $.goAlbum.addEventListener('click', function () { self.goAlbum(); });
@@ -283,8 +304,8 @@ RR.pages.game = {
     // WebView 端沉浸式全屏，shim 返回 0
     var statusBar = info.statusBarHeight || 0;
 
-    // 预留：状态栏 + HUD + 订单区 + 自动合成条 34 + 底部栏 + 安全区
-    var reserve = statusBar + 40 + 152 + 34 + 76 + 20;
+    // 预留：状态栏 + HUD + 订单区(头像+餐盘) + 自动合成条 34 + 信息栏 96 + 底部栏 + 安全区
+    var reserve = statusBar + 40 + 196 + 34 + 96 + 76 + 20;
     var availH = Math.max(240, H - reserve);
     var cellByW = Math.floor((W - 28) / eng.COLS);
     var cellByH = Math.floor(availH / eng.ROWS);
@@ -457,7 +478,9 @@ RR.pages.game = {
           '<span class="o-avatar">' + (o.face ? '<img class="o-face" src="assets/faces/' + o.face + '.png" draggable="false"/>' : o.icon) + '</span>' +
           '<span class="o-name">' + o.name + '</span>' +
         '</div>' +
-        '<div class="o-items">';
+        '<div class="o-plate">' +
+          '<img class="plate-img" src="assets/plate.png" draggable="false"/>' +
+          '<div class="o-items">';
       for (var m = 0; m < o.items.length; m++) {
         var it = o.items[m];
         html += '<div class="o-item' + (it.ok ? ' ok' : '') + '">' +
@@ -465,7 +488,7 @@ RR.pages.game = {
           '<span class="oi-n">' + it.have + '/' + it.n + '</span>' +
         '</div>';
       }
-      html += '</div>' +
+      html += '</div></div>' +
         '<div class="o-foot">' +
           '<div class="o-coin">🪙 ' + o.coin + '</div>' +
           '<div class="o-btn' + (o.ready ? ' on' : '') + '" data-id="' + o.id + '">' +
@@ -520,6 +543,11 @@ RR.pages.game = {
       el.addEventListener('touchmove', this._hMove, { passive: false });
       el.addEventListener('touchend', this._hEnd);
       el.addEventListener('touchcancel', this._hEnd);
+    }
+    // 信息面板指向的格子已空/变了 -> 收起
+    if (this.d.infoIdx >= 0) {
+      var cur = store.get().slots[this.d.infoIdx];
+      if (!cur || cur.k !== 'item') this.hideItemInfo();
     }
   },
 
@@ -801,17 +829,57 @@ RR.pages.game = {
     this.render();
   },
 
-  /** 点击物品：满级则出售 */
+  /** 点击物品：打开/关闭底部信息面板（常驻，不自动消失） */
   tryTapItem: function (idx) {
     var st = store.get();
     var s = st.slots[idx];
     if (!s || s.k !== 'item') return;
-    var r = store.sell(idx);
-    if (!r.ok) {
-      var m = cfg.getItemMeta(s.id);
-      this.showToast(m.name + '（Lv.' + m.level + '/' + m.max + '）');
+    if (this.d.infoIdx === idx) {
+      this.hideItemInfo();
       return;
     }
+    this.showItemInfo(idx);
+  },
+
+  /** 物品 id -> 产出它的生成器 */
+  _producerOf: function (id) {
+    if (!this._genByChain) {
+      this._genByChain = {};
+      for (var i = 0; i < cfg.GENS.length; i++) this._genByChain[cfg.GENS[i].chain] = cfg.GENS[i];
+    }
+    return this._genByChain[String(id).split('_')[0]] || null;
+  },
+
+  showItemInfo: function (idx) {
+    var st = store.get();
+    var s = st.slots[idx];
+    if (!s || s.k !== 'item') return;
+    var m = cfg.getItemMeta(s.id);
+    var gen = this._producerOf(s.id);
+    this.d.infoIdx = idx;
+    this.$.infoImg.src = 'assets/items/' + s.id + '.png';
+    this.$.infoName.textContent = m.name;
+    this.$.infoLv.textContent = 'Lv.' + m.level + '/' + m.max;
+    this.$.infoFrom.textContent = gen ? gen.name : '未知容器';
+    this.$.infoSell.style.display = m.level >= m.max ? '' : 'none';
+    this.$.infoEmpty.style.display = 'none';
+    this.$.infoBody.style.display = '';
+  },
+
+  hideItemInfo: function () {
+    this.d.infoIdx = -1;
+    if (!this.$ || !this.$.infobar) return;
+    this.$.infoEmpty.style.display = '';
+    this.$.infoBody.style.display = 'none';
+  },
+
+  /** 信息栏里的出售按钮（满级物品） */
+  sellFromInfo: function () {
+    var idx = this.d.infoIdx;
+    if (idx < 0) return;
+    var r = store.sell(idx);
+    this.hideItemInfo();
+    if (!r.ok) return;
     this.set({
       showSell: true,
       sellInfo: { icon: r.icon, name: r.name, price: r.price, id: r.id }

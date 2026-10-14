@@ -202,39 +202,57 @@
   text-overflow: ellipsis;
 }
 
+/* 餐盘：头像下方，物品直接摆在盘子上 */
+#screen-game .o-plate {
+  position: relative;
+  margin: 6px 0 2px;
+}
+#screen-game .plate-img {
+  width: 100%;
+  display: block;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
 #screen-game .o-items {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
   display: flex;
   flex-wrap: wrap;
-  margin: 8px 0 6px;
-  min-height: 56px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
 }
 #screen-game .o-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 52px;
-  padding: 3px 0;
-  margin: 0 4px 4px 0;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 2px solid #f0e0d0;
+  width: 40px;
+  margin: 0 2px;
   position: relative;
 }
-#screen-game .o-item.ok {
-  border-color: #7fd0a8;
-  background: #eafaf3;
+#screen-game .o-item.ok .oi-img {
+  filter: drop-shadow(0 0 5px rgba(111, 201, 176, 0.9));
+}
+#screen-game .o-item.ok .oi-n {
+  color: #4aa383;
+  font-weight: 700;
 }
 #screen-game .oi-icon {
   font-size: 28px;
   line-height: 32px;
 }
 #screen-game .oi-img {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  object-fit: cover;
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
   display: block;
   pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 #screen-game .oi-n {
   font-size: 17px;
@@ -387,9 +405,6 @@
 #screen-game .item-inner {
   width: 100%;
   height: 100%;
-  border-radius: 16px;
-  background: linear-gradient(180deg, #fffefc 0%, #fff2e4 100%);
-  box-shadow: 0 4px 10px rgba(122, 85, 64, 0.22), inset 0 -3px 0 rgba(122, 85, 64, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -404,10 +419,10 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  border-radius: 10px;
   pointer-events: none;
   -webkit-user-drag: none;
   user-select: none;
+  filter: drop-shadow(0 3px 3px rgba(122, 85, 64, 0.25));
 }
 #screen-game .item-lv {
   position: absolute;
@@ -424,9 +439,8 @@
   font-weight: 700;
   text-align: center;
 }
-#screen-game .item.maxlv .item-inner {
-  background: linear-gradient(180deg, #fff6d8 0%, #ffe6b0 100%);
-  box-shadow: 0 4px 12px rgba(213, 149, 32, 0.4), inset 0 0 0 3px #f5c85a;
+#screen-game .item.maxlv .item-img {
+  filter: drop-shadow(0 0 7px rgba(245, 200, 90, 0.95)) drop-shadow(0 3px 3px rgba(122, 85, 64, 0.25));
 }
 #screen-game .item-star {
   position: absolute;
@@ -810,4 +824,59 @@
     box-shadow: 0 0 18px rgba(255, 208, 130, 0.95), 0 0 34px rgba(255, 186, 90, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
     filter: drop-shadow(0 0 9px rgba(255, 214, 150, 0.85));
   }
+}
+
+/* v1.4 棋盘下方常驻物品信息栏 */
+#screen-game .infobar {
+  flex: none;
+  height: 92px;
+  margin: 0 16px 6px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #fffdfa 0%, #fff4ea 100%);
+  box-shadow: 0 6px 16px rgba(122, 85, 64, 0.14);
+  border: 2px solid #f0e0d0;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+#screen-game .info-empty {
+  width: 100%;
+  text-align: center;
+  color: #b8a599;
+  font-size: 20px;
+}
+#screen-game .info-body {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+#screen-game .info-img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin-right: 14px;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+#screen-game .info-text {
+  flex: 1;
+  min-width: 0;
+}
+#screen-game .info-name {
+  font-size: 24px;
+  font-weight: 800;
+  color: #7a5540;
+}
+#screen-game .info-sub {
+  font-size: 19px;
+  color: #a08a7c;
+  margin-top: 4px;
+}
+#screen-game .info-sell {
+  margin-left: auto;
+  height: 46px;
+  line-height: 42px;
+  padding: 0 22px;
+  flex: none;
 }
