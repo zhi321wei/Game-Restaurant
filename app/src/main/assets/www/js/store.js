@@ -83,6 +83,7 @@ function newState() {
     slots,
     orders: [],
     decor: {},          // decorId -> true
+    decorStyle: {},     // v1.9 part -> style 1..3（每套家具三种风格）
     chapters: {},       // chapterId -> true
     clues: [],
     album: {},          // itemId -> true
@@ -133,6 +134,7 @@ function migrate(old) {
   st.exp = old.exp || 0;
   st.coin = old.coin != null ? old.coin : st.coin;
   st.decor = old.decor || {};
+  st.decorStyle = old.decorStyle || {};
   st.chapters = old.chapters || {};
   st.clues = old.clues || [];
   st.album = old.album || {};
@@ -156,6 +158,7 @@ function load() {
       // 兼容：补齐字段
       state.stats = state.stats || { orders: 0, merges: 0, taps: 0, coin: 0 };
       state.decor = state.decor || {};
+      state.decorStyle = state.decorStyle || {};
       state.chapters = state.chapters || {};
       state.clues = state.clues || [];
       state.album = state.album || {};
@@ -598,13 +601,33 @@ function offlineBonus() {
   return { mins, coin: gap >= 60000 ? coin : 0 };
 }
 
+// ---------------------------------------------------------------- 装修风格（v1.9）
+/** 取某场景部件的当前风格（1..3），默认 1 */
+function getDecorStyle(part) {
+  const st = get();
+  const n = st.decorStyle[part];
+  return n >= 1 && n <= 3 ? n : 1;
+}
+
+/** 切换某场景部件的风格（仅该部件已装修时有效） */
+function setDecorStyle(part, style) {
+  const st = get();
+  const d = DECOR.find((x) => x.part === part);
+  if (!d || !st.decor[d.id]) return false;
+  const n = Math.round(style);
+  if (n < 1 || n > 3) return false;
+  st.decorStyle[part] = n;
+  save();
+  return true;
+}
+
 module.exports = {
   SAVE_KEY,
   newState, load, get, save, saveLazy, reset,
   makeOrderFor,
   tick, addExp, addCoin, addStamina, tapGen, dragTo, sell, autoMerge, autoMergeAll,
   orderState, deliver, countItem,
-  decorStatus, buildDecor,
+  decorStatus, buildDecor, getDecorStyle, setDecorStyle,
   nextChapter, hasPendingStory, finishChapter, chapterProgress,
   storyGap,
   markAlbum, albumCount, albumTotal,

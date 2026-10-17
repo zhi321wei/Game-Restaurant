@@ -7,6 +7,8 @@
   var decorMod = require('decor');
   var DECOR = decorMod.DECOR;
   var PART_HINT = decorMod.PART_HINT;
+  var STYLE_NAMES = decorMod.STYLE_NAMES;
+  var PART_IMG = decorMod.PART_IMG;
 
   /* 页面状态（对应原 this.data） */
   var state = {
@@ -62,6 +64,13 @@
           else if (act === 'closeConfirm') self.closeConfirm();
           else if (act === 'doBuild') self.doBuild();
           else if (act === 'closeClue') self.closeClue();
+          else if (act === 'host') self.hostAct();
+          return;
+        }
+        // v1.9 风格切换按钮（优先于 build/part 判断）
+        var styleEl = t.closest ? t.closest('[data-style]') : null;
+        if (styleEl && self.el.contains(styleEl)) {
+          self.onStyleTap(styleEl);
           return;
         }
         var buildEl = t.closest ? t.closest('[data-build]') : null;
@@ -94,6 +103,7 @@
       clearTimeout(this._hlTimer);
       clearTimeout(this._toastTimer);
       clearTimeout(this._clueTimer);
+      clearTimeout(this._hostTimer);
     },
 
     refresh: function () {
@@ -108,7 +118,8 @@
         var reqs = d.req.map(function (r) {
           var m = cfg.getItemMeta(r.id) || { icon: '❓', name: '?' };
           var have = store.countItem(r.id);
-          return { id: r.id, icon: m.icon, name: m.name, have: have, n: r.n, ok: have >= r.n };
+          // v1.9 需求图标与实际合成物品统一：都用 assets/items/<id>.png
+          return { id: r.id, img: 'assets/items/' + r.id + '.png', name: m.name, have: have, n: r.n, ok: have >= r.n };
         });
         var btn = '装修';
         if (status === 'done') btn = '已完成';
@@ -118,6 +129,7 @@
         else btn = '开始装修';
         return {
           id: d.id,
+          part: d.part,
           name: d.name,
           desc: d.desc,
           cost: d.cost,
@@ -148,77 +160,50 @@
 
     renderRoom: function () {
       var p = state.parts;
+      // v1.9 每个部件的当前风格（floor/wall 走 CSS 配色，其余走图片）
+      var styleOf = {};
+      Object.keys(PART_IMG).forEach(function (pt) { styleOf[pt] = store.getDecorStyle(pt); });
+      styleOf.floor = store.getDecorStyle('floor');
+      styleOf.wall = store.getDecorStyle('wall');
+      function img(pt) {
+        return 'assets/decor/parts/' + PART_IMG[pt] + '_s' + styleOf[pt] + '.png';
+      }
+      function part(pt, icoDone, icoBad, extraDone) {
+        var done = p[pt];
+        return '<div class="part p-' + pt + (done ? ' done' : '') + '" data-part="' + pt + '">' +
+          '<img class="p-img' + (done ? '' : ' bad') + '" src="' + img(pt) + '" draggable="false"/>' +
+          (done ? (extraDone || '') : '<span class="p-hint">' + PART_HINT[pt] + '</span>') +
+        '</div>';
+      }
       var h = '';
       h += '<div class="wallpaper" data-part="wall"></div>';
 
-      h += '<div class="part p-sign' + (p.sign ? ' done' : '') + '" data-part="sign">' +
-        '<span class="p-ico">' + (p.sign ? '✨' : '🪧') + '</span>' +
-        (p.sign
-          ? '<span class="p-label">ROMANTIC</span>'
-          : '<span class="p-hint">' + PART_HINT.sign + '</span>') +
-      '</div>';
-
-      h += '<div class="part p-lamp' + (p.lamp ? ' done' : '') + '" data-part="lamp">' +
-        '<span class="p-ico">💡</span>' +
-        (p.lamp ? '' : '<span class="p-hint">' + PART_HINT.lamp + '</span>') +
-      '</div>';
-
-      h += '<div class="part p-window' + (p.window ? ' done' : '') + '" data-part="window">' +
-        '<span class="p-ico">' + (p.window ? '🌅' : '🪟') + '</span>' +
-        (p.window ? '' : '<span class="p-hint">' + PART_HINT.window + '</span>') +
-      '</div>';
-
-      h += '<div class="part p-flowers' + (p.flowers ? ' done' : '') + '" data-part="flowers">' +
-        '<span class="p-ico">' + (p.flowers ? '💐' : '🪴') + '</span>' +
-        (p.flowers ? '' : '<span class="p-hint">' + PART_HINT.flowers + '</span>') +
-      '</div>';
-
-      h += '<div class="part p-piano' + (p.piano ? ' done' : '') + '" data-part="piano">' +
-        '<span class="p-ico">🎹</span>' +
-        (p.piano ? '' : '<span class="p-hint">' + PART_HINT.piano + '</span>') +
-      '</div>';
-
-      h += '<div class="part p-terrace' + (p.terrace ? ' done' : '') + '" data-part="terrace">' +
-        '<span class="p-ico">' + (p.terrace ? '🏖️' : '🚪') + '</span>' +
-        (p.terrace ? '' : '<span class="p-hint">' + PART_HINT.terrace + '</span>') +
-      '</div>';
-
-      h += '<div class="part p-kitchen' + (p.kitchen ? ' done' : '') + '" data-part="kitchen">' +
-        '<span class="p-ico">' + (p.kitchen ? '👩‍🍳' : '🔒') + '</span>' +
-        (p.kitchen ? '' : '<span class="p-hint">' + PART_HINT.kitchen + '</span>') +
-      '</div>';
-
-      h += '<div class="part p-garden' + (p.gardenArea ? ' done' : '') + '" data-part="gardenArea">' +
-        '<span class="p-ico">' + (p.gardenArea ? '🌿' : '🥀') + '</span>' +
-        (p.gardenArea ? '' : '<span class="p-hint">' + PART_HINT.gardenArea + '</span>') +
-      '</div>';
-
-      h += '<div class="part p-counter' + (p.counter ? ' done' : '') + '" data-part="counter">' +
-        '<span class="p-ico">' + (p.counter ? '🍽️' : '🔨') + '</span>' +
-        (p.counter ? '' : '<span class="p-hint">' + PART_HINT.counter + '</span>') +
-      '</div>';
-
-      h += '<div class="part p-seats' + (p.seats ? ' done' : '') + '" data-part="seats">' +
-        '<span class="p-ico">' + (p.seats ? '🪑' : '🪚') + '</span>' +
-        (p.seats ? '' : '<span class="p-hint">' + PART_HINT.seats + '</span>') +
-      '</div>';
-
-      h += '<div class="part p-stage' + (p.stage ? ' done' : '') + '" data-part="stage">' +
-        '<span class="p-ico">' + (p.stage ? '🎤' : '📦') + '</span>' +
-        (p.stage ? '' : '<span class="p-hint">' + PART_HINT.stage + '</span>') +
-      '</div>';
+      h += part('sign', null, null, '<span class="p-label">ROMANTIC</span>');
+      h += part('lamp');
+      h += part('window');
+      h += part('flowers');
+      h += part('piano');
+      h += part('terrace');
+      h += part('kitchen');
+      h += part('gardenArea');
+      h += part('counter');
+      h += part('seats');
+      h += part('stage');
 
       if (p.blackcat) {
-        h += '<div class="cat done" data-part="blackcat"><span class="p-ico">🐈‍⬛</span></div>';
+        h += '<div class="part p-cat done" data-part="blackcat">' +
+          '<img class="p-img" src="' + img('blackcat') + '" draggable="false"/></div>';
       }
 
-      h += '<div class="floor' + (p.floor ? ' done' : '') + '" data-part="floor">' +
+      h += '<div class="floor' + (p.floor ? ' done' : '') + ' st' + styleOf.floor + '" data-part="floor">' +
         (p.floor ? '' : '<span class="f-hint">' + PART_HINT.floor + '</span>') +
       '</div>';
 
-      h += '<div class="host"><span class="host-ico">👩‍🦰</span></div>';
+      // v1.9 主人公立绘：可在台面后走动，点击做动作
+      h += '<div class="host" data-action="host">' +
+        '<img class="host-img" src="assets/faces/host.png" draggable="false"/></div>';
 
-      this._roomEl.className = 'room' + (p.wall ? ' walled' : '');
+      this._roomEl.className = 'room' + (p.wall ? ' walled' : '') + ' st' + styleOf.wall;
       this._roomEl.innerHTML = h;
     },
 
@@ -248,11 +233,29 @@
 
         var reqs = d.reqs.map(function (r) {
           return '<div class="req' + (r.ok ? ' ok' : '') + '" data-req="' + r.id + '">' +
-            '<span class="r-ico">' + r.icon + '</span>' +
+            '<span class="r-ico"><img class="r-img" src="' + r.img + '" draggable="false"/></span>' +
             '<span class="r-n">' + r.have + '/' + r.n + '</span>' +
             '<div class="req-tip" style="display:none"></div>' +
           '</div>';
         }).join('');
+
+        // v1.9 已完成家具显示风格切换条（3 种风格即时切换；floor/wall 用色板）
+        var styleBar = '';
+        if (d.status === 'done') {
+          var cur = store.getDecorStyle(d.part);
+          var btns = '';
+          for (var s = 1; s <= 3; s++) {
+            if (PART_IMG[d.part]) {
+              btns += '<img class="sb-img' + (s === cur ? ' on' : '') + '" data-style="' + s + '" data-sb="' + d.part + '" ' +
+                'src="assets/decor/parts/' + PART_IMG[d.part] + '_s' + s + '.png" draggable="false"/>';
+            } else {
+              btns += '<span class="sb-swatch sb-st' + s + (s === cur ? ' on' : '') + '" data-style="' + s + '" data-sb="' + d.part + '"></span>';
+            }
+          }
+          styleBar = '<div class="style-bar">' +
+            '<span class="sb-label">风格 · ' + STYLE_NAMES[cur] + '</span>' + btns +
+          '</div>';
+        }
 
         return '<div class="dcard ' + d.status + (d.id === hl ? ' hl' : '') + '" id="card-' + d.id + '">' +
           '<div class="d-head">' +
@@ -260,6 +263,7 @@
           '</div>' +
           '<div class="d-desc">' + d.desc + '</div>' +
           '<div class="d-req">' + reqs + '</div>' +
+          styleBar +
           '<div class="d-foot">' +
             '<span class="d-cost">🪙 ' + d.cost + '</span>' +
             '<div class="d-btn' + (d.status === 'ready' ? ' on' : '') + '" data-build="' + d.id + '">' + d.btn + '</div>' +
@@ -276,7 +280,7 @@
       if (c) {
         var reqs = c.reqs.map(function (r) {
           return '<div class="cf-req-item">' +
-            '<span class="r-ico">' + r.icon + '</span>' +
+            '<span class="r-ico"><img class="r-img" src="' + r.img + '" draggable="false"/></span>' +
             '<span class="cf-n">' + r.name + ' ' + r.have + '/' + r.n + '</span>' +
           '</div>';
         }).join('');
@@ -313,6 +317,27 @@
 
     /* ------------------------------------------------------------ 交互 */
 
+    /** v1.9 切换家具风格：写存档 -> 场景与风格条即时刷新 */
+    onStyleTap: function (el) {
+      var part = el.dataset.sb;
+      var n = parseInt(el.dataset.style, 10);
+      if (!part || !n) return;
+      if (!store.setDecorStyle(part, n)) return;
+      this.refresh();
+    },
+
+    /** v1.9 主人公做动作：原地跳一下（走路动画由 CSS 常驻） */
+    hostAct: function () {
+      var el = this._roomEl.querySelector('.host');
+      if (!el) return;
+      el.classList.remove('act');
+      void el.offsetWidth; // 重启动画
+      el.classList.add('act');
+      clearTimeout(this._hostTimer);
+      var self = this;
+      this._hostTimer = setTimeout(function () { el.classList.remove('act'); }, 900);
+    },
+
     /** 点餐厅场景里的元素：滚到对应卡片并高亮；没改造完的顺便打开改造确认 */
     onPartTap: function (part) {
       var d = DECOR.find(function (x) { return x.part === part; });
@@ -345,7 +370,7 @@
       if (!m) return;
       var gen = this._producerOf(id);
       tip.innerHTML =
-        '<div class="rt-name">' + m.icon + ' ' + m.name + '</div>' +
+        '<div class="rt-name"><img class="rt-img" src="assets/items/' + id + '.png" draggable="false"/> ' + m.name + '</div>' +
         '<div class="rt-lv">等级 Lv.' + m.level + '/' + m.max + '</div>' +
         '<div class="rt-from">产出容器：' + (gen ? gen.name : '未知容器') + '</div>';
       tip.style.display = '';
@@ -394,7 +419,7 @@
         status: store.decorStatus(d),
         reqs: d.req.map(function (r) {
           var m = cfg.getItemMeta(r.id) || { icon: '❓', name: '?' };
-          return { icon: m.icon, name: m.name, n: r.n, have: store.countItem(r.id) };
+          return { img: 'assets/items/' + r.id + '.png', name: m.name, n: r.n, have: store.countItem(r.id) };
         }),
         id: id
       };

@@ -153,8 +153,7 @@ const DECOR = [
 ];
 
 // 场景元素：未完成时的灰调占位文案
-const PART_HINT = {
-  floor: '光秃秃的水泥地',
+const PART_HINT = {  floor: '光秃秃的水泥地',
   wall: '斑驳的旧墙',
   counter: '倒塌的旧吧台',
   window: '钉死的木板窗',
@@ -170,6 +169,15 @@ const PART_HINT = {
   stage: '堆杂物的角落'
 };
 
-module.exports = { DECOR, PART_HINT };
+// v1.9 风格系统：每套家具 3 种风格（1 海洋 / 2 田园 / 3 复古）
+const STYLE_NAMES = { 1: '海洋风', 2: '田园风', 3: '复古风' };
+// part -> assets/decor/parts/ 下的图片名前缀（floor/wall 无图，走 CSS 配色）
+const PART_IMG = {
+  counter: 'counter', window: 'window', lamp: 'lamp', seats: 'seats',
+  sign: 'sign', flowers: 'flowers', piano: 'piano', terrace: 'terrace',
+  kitchen: 'kitchen', gardenArea: 'garden', blackcat: 'blackcat', stage: 'stage'
+};
+
+module.exports = { DECOR, PART_HINT, STYLE_NAMES, PART_IMG };
 
 });
