@@ -176,6 +176,9 @@
         '</div>';
       }
       var h = '';
+      // v1.10 餐厅内景背景图：未贴墙纸时压暗做旧（破败态），贴好后墙纸走染色层
+      h += '<div class="room-bg' + (p.wall ? '' : ' bad') + '">' +
+        '<img class="bg-img" src="assets/decor/room-bg.png" draggable="false"/></div>';
       h += '<div class="wallpaper" data-part="wall"></div>';
 
       h += part('sign', null, null, '<span class="p-label">ROMANTIC</span>');

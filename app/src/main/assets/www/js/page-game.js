@@ -1058,12 +1058,17 @@ RR.pages.game = {
   },
 
   // ---------------------------------------------------------------- 体力
-  /** 体力胶囊后面的「＋」：老公送体力 */
+  /** 体力胶囊后面的「＋」：花金币买体力（1 金币 = 1 体力） */
   onAddStamina: function () {
-    var r = store.addStamina(100);
+    var r = store.addStamina();
     this.render();
-    this.showToast('加体力成功');
+    if (!r.ok) {
+      this.showToast(r.reason === 'coin' ? '金币不足，先去赚点金币吧 🪙' : '体力已满');
+      return;
+    }
+    this.showToast('消耗 ' + r.cost + ' 金币加体力');
     this.pushFloat('+' + r.gained + ' 体力', 'st');
+    this.pushFloat('-' + r.cost, 'coin');
   },
 
   // ---------------------------------------------------------------- 订单

@@ -56,69 +56,90 @@
   height: 480px;
   border-radius: 28px;
   overflow: hidden;
-  background: #b3a494;
+  background: #a4907c;
   box-shadow: 0 10px 26px rgba(122, 85, 64, 0.22);
 }
 
-/* 破败墙（未贴墙纸）：灰暗 + 污渍 */
+/* v1.10 餐厅内景背景图（AI 生成空房间：墙裙+踢脚线+木地板） */
+#screen-decor .room-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+}
+#screen-decor .bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* 破败态：同一房间去色压暗做旧（装修前后同背景对比） */
+#screen-decor .room-bg.bad .bg-img {
+  filter: grayscale(0.88) brightness(0.5) sepia(0.38) contrast(0.92);
+}
+
+/* 墙纸层：未贴 = 灰暗污渍；贴好 = 三套风格半透明染色（叠在背景图上） */
 #screen-decor .wallpaper {
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
+  z-index: 0;
+  cursor: pointer;
   background:
-    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0 31px, rgba(255, 255, 255, 0.04) 31px 62px),
-    radial-gradient(ellipse 130px 64px at 22% 28%, rgba(88, 68, 48, 0.28), transparent 70%),
-    radial-gradient(ellipse 96px 52px at 78% 56%, rgba(88, 68, 48, 0.22), transparent 70%),
-    linear-gradient(180deg, #b5a390 0%, #a3907c 100%);
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0 31px, rgba(255, 255, 255, 0.03) 31px 62px),
+    radial-gradient(ellipse 130px 64px at 22% 28%, rgba(88, 68, 48, 0.3), transparent 70%),
+    radial-gradient(ellipse 96px 52px at 78% 56%, rgba(88, 68, 48, 0.24), transparent 70%),
+    linear-gradient(180deg, rgba(120, 100, 82, 0.42), rgba(96, 80, 64, 0.42));
 }
 /* 墙纸三套风格：st1 海洋 / st2 田园 / st3 复古 */
-#screen-decor .room.st1 .wallpaper {
+#screen-decor .room.walled.st1 .wallpaper {
   background:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.55) 0 24px, rgba(186, 216, 234, 0.5) 24px 48px),
-    linear-gradient(180deg, #e9f5fa 0%, #cde7f3 100%);
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.4) 0 24px, rgba(186, 216, 234, 0.34) 24px 48px),
+    linear-gradient(180deg, rgba(200, 230, 244, 0.4), rgba(170, 210, 232, 0.4));
 }
-#screen-decor .room.st2 .wallpaper {
+#screen-decor .room.walled.st2 .wallpaper {
   background:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.42) 0 22px, rgba(238, 219, 192, 0.48) 22px 44px),
-    linear-gradient(180deg, #fdf3e2 0%, #f6e5cf 100%);
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.38) 0 22px, rgba(238, 219, 192, 0.36) 22px 44px),
+    linear-gradient(180deg, rgba(250, 238, 214, 0.42), rgba(240, 220, 186, 0.42));
 }
-#screen-decor .room.st3 .wallpaper {
+#screen-decor .room.walled.st3 .wallpaper {
   background:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.16) 0 20px, rgba(120, 96, 74, 0.22) 20px 40px),
-    linear-gradient(180deg, #efe4d4 0%, #ddcbb6 100%);
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.14) 0 20px, rgba(120, 96, 74, 0.2) 20px 40px),
+    linear-gradient(180deg, rgba(214, 196, 174, 0.4), rgba(188, 166, 140, 0.4));
 }
 
-/* 地板：破败水泥 -> 三套风格木纹 */
+/* 地板层：透明点击区 + 三套风格木色染色（背景图自带木地板） */
 #screen-decor .floor {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 96px;
-  background:
-    radial-gradient(ellipse 200px 40px at 30% 20%, rgba(60, 48, 38, 0.3), transparent 70%),
-    linear-gradient(180deg, #8d7d6c 0%, #766656 100%);
+  height: 140px;
+  z-index: 0;
+  cursor: pointer;
+  background: linear-gradient(180deg, rgba(70, 58, 46, 0.34), rgba(52, 42, 32, 0.42));
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 0;
 }
 #screen-decor .floor.done.st1 {
   background:
-    repeating-linear-gradient(90deg, #cfe3ee 0 44px, #bcd6e6 44px 46px),
-    linear-gradient(180deg, #d8edf6, #b3d4e6);
+    repeating-linear-gradient(90deg, rgba(160, 200, 220, 0.4) 0 44px, rgba(130, 180, 205, 0.4) 44px 46px),
+    linear-gradient(180deg, rgba(205, 230, 242, 0.36), rgba(168, 205, 225, 0.36));
 }
 #screen-decor .floor.done.st2 {
   background:
-    repeating-linear-gradient(90deg, #e0b478 0 46px, #c9965a 46px 48px),
-    linear-gradient(180deg, #e6c08a, #c9965a);
+    repeating-linear-gradient(90deg, rgba(222, 178, 118, 0.44) 0 46px, rgba(198, 148, 92, 0.44) 46px 48px),
+    linear-gradient(180deg, rgba(228, 190, 136, 0.36), rgba(200, 150, 92, 0.36));
 }
 #screen-decor .floor.done.st3 {
   background:
-    repeating-linear-gradient(90deg, #7a5a42 0 44px, #65493a 44px 46px),
-    linear-gradient(180deg, #8a6a52, #5f4634);
+    repeating-linear-gradient(90deg, rgba(122, 90, 66, 0.5) 0 44px, rgba(96, 70, 52, 0.5) 44px 46px),
+    linear-gradient(180deg, rgba(138, 106, 82, 0.4), rgba(94, 68, 50, 0.4));
 }
 #screen-decor .f-hint {
   font-size: 18px;
@@ -175,26 +196,27 @@
 }
 
 /* 部件定位（750 设计宽，room 高 480） */
-#screen-decor .p-sign { left: 50%; transform: translateX(-50%); top: 4px; width: 150px; height: 110px; z-index: 3; }
-#screen-decor .p-lamp { left: 50%; transform: translateX(-50%); top: 118px; width: 90px; height: 116px; z-index: 3; }
-#screen-decor .p-window { left: 20px; top: 94px; width: 212px; height: 174px; }
-#screen-decor .p-terrace { right: 20px; top: 90px; width: 182px; height: 194px; }
-#screen-decor .p-kitchen { right: 196px; top: 96px; width: 132px; height: 114px; }
-#screen-decor .p-gardenArea { right: 196px; top: 214px; width: 132px; height: 84px; }
-#screen-decor .p-flowers { left: 30px; top: 250px; width: 184px; height: 90px; z-index: 3; }
-#screen-decor .p-piano { left: 20px; bottom: 62px; width: 152px; height: 88px; }
-#screen-decor .p-counter { left: 50%; transform: translateX(-50%); bottom: 94px; width: 240px; height: 150px; z-index: 3; }
-#screen-decor .p-seats { left: 146px; bottom: 74px; width: 78px; height: 86px; z-index: 3; }
-#screen-decor .p-stage { right: 20px; bottom: 94px; width: 142px; height: 96px; }
-#screen-decor .p-cat { right: 26px; bottom: 16px; width: 104px; height: 78px; z-index: 3; }
+/* 部件定位（room 702×480；v1.10 按背景空间关系重排：墙上挂件靠上、落地家具贴地、主人公吧台后） */
+#screen-decor .p-sign { left: 50%; transform: translateX(-50%); top: 6px; width: 150px; height: 108px; z-index: 3; }
+#screen-decor .p-lamp { left: 200px; top: 0; width: 76px; height: 110px; z-index: 3; }
+#screen-decor .p-window { left: 14px; top: 96px; width: 196px; height: 158px; }
+#screen-decor .p-terrace { right: 14px; top: 84px; width: 168px; height: 176px; }
+#screen-decor .p-kitchen { right: 20px; bottom: 70px; width: 128px; height: 100px; }
+#screen-decor .p-gardenArea { left: 12px; bottom: 66px; width: 120px; height: 78px; }
+#screen-decor .p-flowers { left: 26px; top: 226px; width: 168px; height: 62px; z-index: 3; }
+#screen-decor .p-piano { left: 130px; bottom: 64px; width: 120px; height: 86px; }
+#screen-decor .p-counter { left: 200px; bottom: 62px; width: 240px; height: 148px; z-index: 3; }
+#screen-decor .p-seats { left: 240px; bottom: 54px; width: 84px; height: 92px; z-index: 4; }
+#screen-decor .p-stage { right: 150px; bottom: 62px; width: 120px; height: 90px; }
+#screen-decor .p-cat { right: 60px; bottom: 12px; width: 96px; height: 72px; z-index: 4; }
 
 /* ---------------------------------------------------------------- 主人公立绘 */
 #screen-decor .host {
   position: absolute;
-  left: 36px;
-  bottom: 92px;
-  width: 150px;
-  height: 208px;
+  left: 260px;
+  bottom: 62px;
+  width: 148px;
+  height: 206px;
   z-index: 2;
   cursor: pointer;
   animation: hostWalk 10s ease-in-out infinite alternate;
@@ -206,14 +228,13 @@
   object-position: bottom center;
   filter: drop-shadow(0 5px 6px rgba(70, 50, 35, 0.28));
 }
-/* 常驻走动：在地板上来回慢步（附带轻微上下起伏） */
+/* 常驻走动：在吧台后来回慢步（下半身被吧台挡住，只露上半身） */
 @keyframes hostWalk {
   0% { transform: translateX(0) translateY(0); }
-  20% { transform: translateX(38px) translateY(-3px); }
-  40% { transform: translateX(76px) translateY(0); }
-  60% { transform: translateX(114px) translateY(-3px); }
-  80% { transform: translateX(152px) translateY(0); }
-  100% { transform: translateX(190px) translateY(-3px); }
+  25% { transform: translateX(6px) translateY(-3px); }
+  50% { transform: translateX(12px) translateY(0); }
+  75% { transform: translateX(18px) translateY(-3px); }
+  100% { transform: translateX(24px) translateY(0); }
 }
 /* 点击做动作：跳一下 */
 #screen-decor .host.act .host-img {

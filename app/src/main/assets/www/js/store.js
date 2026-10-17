@@ -395,18 +395,23 @@ function autoMergeAll() {
 }
 
 /**
- * 手动补体力（上限 STAMINA.hardMax，可临时超过当前等级的体力上限）。
- * @returns {{ok:boolean, value:number, gained:number, max:number}}
+ * 花金币补体力：每次 +1 体力，消耗 1 金币（v1.10 起改为金币购买）。
+ * 金币不足时不加体力；体力已满时不扣金币。
+ * @returns {{ok:boolean, reason?:string, value:number, gained:number, cost:number, max:number}}
  */
-function addStamina(n) {
+function addStamina() {
   const st = get();
   tick();
-  const before = st.stamina;
+  const cost = 1;
   const cap = Math.max(eng.staminaMax(st.lv), cfg.STAMINA.hardMax);
-  st.stamina = Math.min(cap, before + n);
+  if (st.stamina >= cap) return { ok: false, reason: 'full', value: st.stamina, gained: 0, cost: 0, max: eng.staminaMax(st.lv) };
+  if (st.coin < cost) return { ok: false, reason: 'coin', value: st.stamina, gained: 0, cost, max: eng.staminaMax(st.lv) };
+  const before = st.stamina;
+  st.stamina = Math.min(cap, before + 1);
+  st.coin -= cost;
   const gained = st.stamina - before;
   saveLazy();
-  return { ok: true, value: st.stamina, gained, max: eng.staminaMax(st.lv) };
+  return { ok: true, value: st.stamina, gained, cost, max: eng.staminaMax(st.lv) };
 }
 
 // ---------------------------------------------------------------- 出售
