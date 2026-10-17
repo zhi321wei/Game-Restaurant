@@ -3,6 +3,15 @@
 版本号规则：初始版本 1.0，之后每次更新 +0.1（1.1、1.2、1.3 …）。
 发布方式：修改 `version.txt` 与本文档后，打 tag `vX.Y` 推送，GitHub Actions 自动构建 APK 并创建 Release。
 
+## v1.13 (2026-10-17)
+
+APK 包名改为 com.xiongrestaurant（TapTap 上架用）。
+
+- 包名（applicationId / namespace）由 `com.zhi321wei.romanticrestaurant` 改为 `com.xiongrestaurant`，MainActivity 源码目录同步迁移
+- 签名不变（keystore.p12，alias rr），覆盖安装保数据的规则延续；但包名变更后与旧包（com.zhi321wei.romanticrestaurant）被视为不同应用，已安装旧包的用户需先卸载再装新包
+- 游戏内容与 v1.12 完全一致（主人公置顶走动、剧情返回修复、体力 50 点起购均包含）
+- versionCode 随版本号升为 113
+
 ## v1.12 (2026-10-17)
 
 装修页主人公置顶 + 剧情页返回修复 + 体力 50 点起购。
