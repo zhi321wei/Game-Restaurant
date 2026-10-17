@@ -281,7 +281,9 @@
     onClose: function () {
       if (this._timer) clearInterval(this._timer);
       this._timer = null;
-      store.finishChapter(this.chapter.id);
+      // v1.12：回看入口（章节列表）进来时 this.chapter 为 null，
+      // 原来直接取 this.chapter.id 会抛异常导致「回到餐厅」点击无反应
+      if (this.chapter) store.finishChapter(this.chapter.id);
       wx.navigateBack();
     },
 

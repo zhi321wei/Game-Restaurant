@@ -9,6 +9,8 @@ const { CHAPTERS } = require('./story.js');
 
 const SAVE_KEY = 'rr_save_v1';
 const SAVE_VERSION = 3;   // v3：棋盘 7×9（v2：生成器改为棋盘内可拖动）
+// v1.12：花金币买体力每次 50 点起算（距上限不足则按差额，1 金币 = 1 体力）
+const STAMINA_BUY_UNIT = 50;
 
 let state = null;
 let saveTimer = null;
@@ -395,21 +397,21 @@ function autoMergeAll() {
 }
 
 /**
- * 花金币补体力：每次 +1 体力，消耗 1 金币（v1.10 起改为金币购买）。
+ * 花金币补体力：每次 +50 点体力起算（距上限不足则按差额），1 金币 = 1 体力（v1.12 起 50 点起购）。
  * 金币不足时不加体力；体力已满时不扣金币。
  * @returns {{ok:boolean, reason?:string, value:number, gained:number, cost:number, max:number}}
  */
 function addStamina() {
   const st = get();
   tick();
-  const cost = 1;
   const cap = Math.max(eng.staminaMax(st.lv), cfg.STAMINA.hardMax);
-  if (st.stamina >= cap) return { ok: false, reason: 'full', value: st.stamina, gained: 0, cost: 0, max: eng.staminaMax(st.lv) };
+  const room = cap - st.stamina;
+  if (room <= 0) return { ok: false, reason: 'full', value: st.stamina, gained: 0, cost: 0, max: eng.staminaMax(st.lv) };
+  const gained = Math.min(STAMINA_BUY_UNIT, room);
+  const cost = gained; // 1 金币 = 1 体力
   if (st.coin < cost) return { ok: false, reason: 'coin', value: st.stamina, gained: 0, cost, max: eng.staminaMax(st.lv) };
-  const before = st.stamina;
-  st.stamina = Math.min(cap, before + 1);
+  st.stamina += gained;
   st.coin -= cost;
-  const gained = st.stamina - before;
   saveLazy();
   return { ok: true, value: st.stamina, gained, cost, max: eng.staminaMax(st.lv) };
 }

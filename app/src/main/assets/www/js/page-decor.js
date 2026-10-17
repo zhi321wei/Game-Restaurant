@@ -203,7 +203,7 @@
         (p.floor ? '' : '<span class="f-hint">' + PART_HINT.floor + '</span>') +
       '</div>';
 
-      // v1.9 主人公立绘：可在台面后走动，点击做动作
+      // v1.12 主人公立绘：保持在最前面（z-index 6 高于家具），时不时左右走动，点击做动作
       h += '<div class="host" data-action="host">' +
         '<img class="host-img" src="assets/faces/host.png" draggable="false"/></div>';
 

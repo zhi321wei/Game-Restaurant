@@ -211,15 +211,16 @@
 #screen-decor .p-cat { right: 60px; bottom: 12px; width: 96px; height: 72px; z-index: 4; }
 
 /* ---------------------------------------------------------------- 主人公立绘 */
+/* v1.12：主人公保持最前面（z-index 高于所有家具的 3/4），不被家具遮挡 */
 #screen-decor .host {
   position: absolute;
   left: 260px;
   bottom: 62px;
   width: 148px;
   height: 206px;
-  z-index: 2;
+  z-index: 6;
   cursor: pointer;
-  animation: hostWalk 10s ease-in-out infinite alternate;
+  animation: hostWalk 14s ease-in-out infinite;
 }
 #screen-decor .host-img {
   width: 100%;
@@ -227,14 +228,21 @@
   object-fit: contain;
   object-position: bottom center;
   filter: drop-shadow(0 5px 6px rgba(70, 50, 35, 0.28));
+  animation: hostBob 0.56s ease-in-out infinite;
 }
-/* 常驻走动：在吧台后来回慢步（下半身被吧台挡住，只露上半身） */
+/* 时不时左右走动：向右走一段 -> 停 -> 转身向左走回并越过原位 -> 停 -> 转身走回原位 */
 @keyframes hostWalk {
-  0% { transform: translateX(0) translateY(0); }
-  25% { transform: translateX(6px) translateY(-3px); }
-  50% { transform: translateX(12px) translateY(0); }
-  75% { transform: translateX(18px) translateY(-3px); }
-  100% { transform: translateX(24px) translateY(0); }
+  0%, 3%    { transform: translateX(0) scaleX(1); }
+  17%, 27%  { transform: translateX(70px) scaleX(1); }
+  30%       { transform: translateX(70px) scaleX(-1); }
+  44%, 54%  { transform: translateX(-90px) scaleX(-1); }
+  57%       { transform: translateX(-90px) scaleX(1); }
+  71%, 100% { transform: translateX(0) scaleX(1); }
+}
+/* 走路起伏：走动时上下轻点（点击做动作时被 hostAct 临时替换） */
+@keyframes hostBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 /* 点击做动作：跳一下 */
 #screen-decor .host.act .host-img {
