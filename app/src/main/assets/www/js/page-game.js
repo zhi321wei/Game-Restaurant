@@ -1102,14 +1102,15 @@ RR.pages.game = {
   },
 
   openStory: function () {
+    // v1.11：有新章节直接播；没有则进剧情页章节列表回看已解锁剧情
     var c = store.nextChapter();
-    if (!c) {
-      this.showToast('暂时没有新的剧情，继续经营吧～');
-      return;
+    if (c) {
+      // Web 版路由不带 query，章节 id 先落到 storage，story 页 onShow 时取
+      wx.setStorageSync('rr_pending_story', c.id);
+    } else {
+      wx.removeStorageSync('rr_pending_story');
     }
-    // Web 版路由不带 query，章节 id 先落到 storage，story 页 onShow 时取
-    wx.setStorageSync('rr_pending_story', c.id);
-    wx.navigateTo({ url: '/pages/story/story?id=' + c.id });
+    wx.navigateTo({ url: '/pages/story/story' });
   },
 
   // ---------------------------------------------------------------- 设置（背景音乐）

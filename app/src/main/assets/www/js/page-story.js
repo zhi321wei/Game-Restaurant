@@ -44,6 +44,15 @@
             '<div class="btn-romantic ghost btn-close">回到餐厅</div>' +
             '<div class="btn-romantic btn-next">下一段故事</div>' +
           '</div>' +
+          /* v1.11 目录按钮：播放中随时回章节列表 */
+          '<div class="btn-romantic ghost btn-catalog">目录</div>' +
+          /* v1.11 章节列表层：回看已解锁剧情 */
+          '<div class="chapter-list">' +
+            '<div class="cl-title">📖 剧情章节</div>' +
+            '<div class="cl-items"></div>' +
+            '<div class="cl-toast"></div>' +
+            '<div class="btn-romantic ghost btn-cl-close">回到餐厅</div>' +
+          '</div>' +
         '</div>';
 
       var el = this.el;
@@ -73,6 +82,35 @@
         e.stopPropagation();
         self.onNextChapter();
       });
+      // v1.11 目录按钮与章节列表
+      this.$catalogBtn = el.querySelector('.btn-catalog');
+      this.$chapterList = el.querySelector('.chapter-list');
+      this.$clItems = el.querySelector('.cl-items');
+      this.$clToast = el.querySelector('.cl-toast');
+      this.$catalogBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        self.showChapterList();
+      });
+      el.querySelector('.btn-cl-close').addEventListener('click', function (e) {
+        e.stopPropagation();
+        self.onClose();
+      });
+      this.$clItems.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var item = e.target.closest ? e.target.closest('.cl-item') : null;
+        if (!item) return;
+        if (item.dataset.status === 'lock') {
+          // 未解锁：提示解锁条件，不播放
+          self.$clToast.textContent = item.dataset.gap || '还未解锁';
+          self.$clToast.classList.add('show');
+          clearTimeout(self._clToastTimer);
+          self._clToastTimer = setTimeout(function () {
+            self.$clToast.classList.remove('show');
+          }, 1600);
+          return;
+        }
+        self.playChapter(item.dataset.id);
+      });
 
       this._timer = null;
       this.d = { idx: 0, total: 0, text: '', role: null, done: false, typing: false };
@@ -82,6 +120,17 @@
       var id = wx.getStorageSync('rr_pending_story');
       if (id) wx.removeStorageSync('rr_pending_story');
       if (!id) id = (store.nextChapter() && store.nextChapter().id);
+      // v1.11：没有待播章节（回看入口）-> 显示章节列表
+      if (!id) {
+        this.chapter = null;
+        this.showChapterList();
+        return;
+      }
+      this.playChapter(id);
+    },
+
+    /* v1.11 播放指定章节 */
+    playChapter: function (id) {
       var chapter = CHAPTERS.find(function (c) { return c.id === id; }) || CHAPTERS[0];
       this.chapter = chapter;
 
@@ -93,6 +142,25 @@
       this._renderChapterArt(chapter);
       this._renderFoot();
       this.showLine(0);
+      this.$chapterList.classList.remove('open');
+    },
+
+    /* v1.11 章节列表：已读可重看、可触发显示「新」、未解锁显示锁定原因 */
+    showChapterList: function () {
+      if (this._timer) { clearInterval(this._timer); this._timer = null; }
+      var list = store.chapterList();
+      var html = list.map(function (c) {
+        var tag, cls;
+        if (c.status === 'read') { tag = '已读'; cls = 'read'; }
+        else if (c.status === 'new') { tag = '新'; cls = 'new'; }
+        else { tag = c.gap || '未解锁'; cls = 'lock'; }
+        return '<div class="cl-item ' + cls + '" data-id="' + c.id + '" data-status="' + c.status + '" data-gap="' + (c.gap || '') + '">' +
+          '<span class="cl-name">' + c.title + '</span>' +
+          '<span class="cl-tag ' + cls + '">' + tag + '</span>' +
+        '</div>';
+      }).join('');
+      this.$clItems.innerHTML = html;
+      this.$chapterList.classList.add('open');
     },
 
     /* 渲染章节插图 + 文案 + 氛围粒子；切章时重放入场动画 */
@@ -220,15 +288,10 @@
     onNextChapter: function () {
       var c = store.nextChapter();
       if (c) {
-        this.chapter = c;
-        this.d.done = false;
-        this.$title.textContent = c.title;
-        this.d.total = c.lines.length;
-        this._renderChapterArt(c);
-        this._renderFoot();
-        this.showLine(0);
+        this.playChapter(c.id);
       } else {
-        wx.navigateBack();
+        // v1.11 没有新章节了：回到章节列表回看
+        this.showChapterList();
       }
     }
   };

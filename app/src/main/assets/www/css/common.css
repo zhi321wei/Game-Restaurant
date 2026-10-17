@@ -14,6 +14,9 @@ body {
 .screen { position: absolute; inset: 0; display: none; overflow: hidden; }
 .screen.active { display: block; }
 .screen.overlay { z-index: 50; }
+/* v1.11：tab 页建自己的层叠上下文，关住内部高 z-index 元素（如 game 页 autobar 60），
+   否则会盖住剧情 overlay（50）导致章节列表右上角露出合成键 */
+#screen-game, #screen-decor, #screen-album { z-index: 1; }
 
 /* wx.showToast 的兜底样式 */
 #wx-toast {

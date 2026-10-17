@@ -558,6 +558,33 @@ function hasPendingStory() {
   return !!nextChapter();
 }
 
+/**
+ * 章节列表（v1.11 剧情回看）：已读章节可重看，满足触发条件的显示「新」，
+ * 未满足的显示锁定原因。
+ * @returns {Array<{id:string,title:string,status:'read'|'new'|'lock',gap:string}>}
+ */
+function chapterList() {
+  const st = get();
+  return CHAPTERS.map(function (c) {
+    if (st.chapters[c.id]) return { id: c.id, title: c.title, status: 'read', gap: '' };
+    const t = c.trigger;
+    let hit = false;
+    if (t.type === 'start') hit = true;
+    else if (t.type === 'level') hit = st.lv >= t.value;
+    else if (t.type === 'orders') hit = st.stats.orders >= t.value;
+    else if (t.type === 'decor') hit = !!st.decor[t.value];
+    if (hit) return { id: c.id, title: c.title, status: 'new', gap: '' };
+    let gap = '';
+    if (t.type === 'level') gap = 'Lv.' + t.value + ' 解锁';
+    else if (t.type === 'orders') gap = '交付 ' + t.value + ' 单解锁';
+    else if (t.type === 'decor') {
+      const d = DECOR.find((x) => x.id === t.value);
+      gap = '装修【' + (d ? d.name : '新区域') + '】解锁';
+    }
+    return { id: c.id, title: c.title, status: 'lock', gap: gap };
+  });
+}
+
 function finishChapter(id) {
   const st = get();
   st.chapters[id] = true;
@@ -633,7 +660,7 @@ module.exports = {
   tick, addExp, addCoin, addStamina, tapGen, dragTo, sell, autoMerge, autoMergeAll,
   orderState, deliver, countItem,
   decorStatus, buildDecor, getDecorStyle, setDecorStyle,
-  nextChapter, hasPendingStory, finishChapter, chapterProgress,
+  nextChapter, hasPendingStory, chapterList, finishChapter, chapterProgress,
   storyGap,
   markAlbum, albumCount, albumTotal,
   offlineBonus

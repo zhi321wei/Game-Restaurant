@@ -240,3 +240,98 @@
   color: #e8607f;
   box-shadow: 0 4px 12px rgba(122, 85, 64, 0.14);
 }
+
+/* ---------------------------------------------------------------- v1.11 章节列表 */
+/* 目录按钮：播放中浮在左上角，随时回列表 */
+#screen-story .btn-catalog {
+  position: absolute;
+  left: 24px;
+  top: 96px;
+  z-index: 6;
+  min-width: 120px;
+  padding: 12px 24px;
+  font-size: 22px;
+}
+
+/* 章节列表层：默认隐藏，.open 时盖住播放层 */
+#screen-story .chapter-list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 8;
+  background: linear-gradient(180deg, #fff6ea 0%, #ffe9de 100%);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  padding: 120px 48px 48px;
+}
+#screen-story .chapter-list.open {
+  display: flex;
+}
+#screen-story .cl-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #b45572;
+  margin-bottom: 28px;
+}
+#screen-story .cl-items {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+#screen-story .cl-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 28px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 4px 12px rgba(122, 85, 64, 0.12);
+  cursor: pointer;
+}
+#screen-story .cl-item:active { transform: scale(0.98); }
+#screen-story .cl-item.lock {
+  opacity: 0.55;
+  filter: grayscale(0.7);
+}
+#screen-story .cl-item.new {
+  box-shadow: 0 4px 12px rgba(232, 96, 127, 0.25), 0 0 0 2px rgba(232, 96, 127, 0.35);
+}
+#screen-story .cl-name {
+  font-size: 26px;
+  font-weight: 700;
+  color: #6b4a58;
+}
+#screen-story .cl-tag {
+  font-size: 20px;
+  padding: 4px 16px;
+  border-radius: 999px;
+  color: #fff;
+}
+#screen-story .cl-tag.read { background: #b9a08f; }
+#screen-story .cl-tag.new { background: #e8607f; }
+#screen-story .cl-tag.lock { background: #9a8a80; }
+#screen-story .btn-cl-close {
+  margin-top: 32px;
+  min-width: 240px;
+}
+#screen-story .cl-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 130px;
+  transform: translateX(-50%);
+  background: rgba(60, 45, 40, 0.85);
+  color: #fff;
+  font-size: 22px;
+  padding: 12px 28px;
+  border-radius: 999px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+#screen-story .cl-toast.show { opacity: 1; }

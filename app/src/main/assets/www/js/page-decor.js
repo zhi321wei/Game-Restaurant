@@ -64,6 +64,7 @@
           else if (act === 'closeConfirm') self.closeConfirm();
           else if (act === 'doBuild') self.doBuild();
           else if (act === 'closeClue') self.closeClue();
+          else if (act === 'openClue') self.openClue();
           else if (act === 'host') self.hostAct();
           return;
         }
@@ -216,7 +217,7 @@
         return;
       }
       this._clueBarEl.innerHTML =
-        '<div class="clue-bar" data-action="closeClue">' +
+        '<div class="clue-bar" data-action="openClue">' +
           '<span class="cb-ico">🔍</span>' +
           '<span class="cb-txt">黑猫谜案 · 已找到 ' + state.clues.length + ' 条线索</span>' +
           '<span class="cb-more">查看 ›</span>' +
@@ -456,6 +457,16 @@
 
     closeClue: function () {
       state.showClue = false;
+      this.renderModal();
+    },
+
+    /** v1.11 点线索条打开线索弹窗（原来误绑成关闭，导致查看不了） */
+    openClue: function () {
+      if (!state.clues.length) {
+        this.showToast('还没有找到线索，继续改造餐厅吧');
+        return;
+      }
+      state.showClue = true;
       this.renderModal();
     },
 
